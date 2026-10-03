@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | Choudhary Medical and Drug Distributors</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .catalog {
+            padding: 60px 5%;
+            background: #f7faf9;
+        }
+
+        .catalog-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .catalog-header h1 {
+            color: #116466;
+            margin-bottom: 10px;
+        }
+
+        .catalog-header p {
+            color: #667777;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 18px;
+            border: 1px solid #d5e2df;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .product-card {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            border: 1px solid #e2ece9;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .product-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .product-card h3 {
+            color: #116466;
+            margin-bottom: 10px;
+        }
+
+        .product-card p {
+            color: #667777;
+            margin-bottom: 18px;
+        }
+
+        .enquiry-btn {
+            display: inline-block;
+            padding: 11px 18px;
+            background: #116466;
+            color: white;
+            text-decoration: none;
+            border-radius: 9px;
+            font-weight: 700;
+        }
+
+        .enquiry-btn:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 800px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo">
+        Choudhary Medical<br>
+        <span>and Drug Distributors</span>
+    </div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="complaint.html">Complaint</a>
+        <a href="feedback.html">Feedback</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <button class="menu-btn">☰</button>
+
+</header>
+
+
+<section class="catalog">
+
+    <div class="catalog-header">
+
+        <h1>Our Product Catalog</h1>
+
+        <p>
+            Browse our products and send your enquiry directly on WhatsApp.
+        </p>
+
+    </div>
+
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="productSearch"
+            placeholder="Search product..."
+        >
+
+    </div>
+
+
+    <div class="product-grid" id="productGrid">
+
+
+        <div class="product-card">
+
+            <div class="product-icon">💊</div>
+
+            <h3>Paracetamol Tablets</h3>
+
+            <p>
+                Pharmaceutical tablets. Contact us for product enquiry.
+            </p>
+
+            <a
+                class="enquiry-btn"
+                target="_blank"
+                href="https://wa.me/918000540156?text=Hello%20Choudhary%20Medical%2C%20I%20want%20to%20enquire%20about%20Paracetamol%20Tablets."
+            >
+                WhatsApp Enquiry
+            </a>
+
+        </div>
+
+
+        <div class="product-card">
+
+            <div class="product-icon">💊</div>
+
+            <h3>Amoxy 625</h3>
+
+            <p>
+                Pharmaceutical product. Contact us for availability and enquiry.
+            </p>
+
+            <a
+                class="enquiry-btn"
+                target="_blank"
+                href="https://wa.me/918000540156?text=Hello%20Choudhary%20Medical%2C%20I%20want%20to%20enquire%20about%20Amoxy%20625."
+            >
+                WhatsApp Enquiry
+            </a>
+
+        </div>
+
+
+        <div class="product-card">
+
+            <div class="product-icon">🧴</div>
+
+            <h3>Pharmaceutical Syrup</h3>
+
+            <p>
+                Syrup products available for wholesale enquiry.
+            </p>
+
+            <a
+                class="enquiry-btn"
+                target="_blank"
+                href="https://wa.me/918000540156?text=Hello%20Choudhary%20Medical%2C%20I%20want%20to%20enquire%20about%20Pharmaceutical%20Syrup."
+            >
+                WhatsApp Enquiry
+            </a>
+
+        </div>
+
+
+        <div class="product-card">
+
+            <div class="product-icon">🩹</div>
+
+            <h3>Medical Dressing</h3>
+
+            <p>
+                Medical dressing products for wholesale enquiry.
+            </p>
+
+            <a
+                class="enquiry-btn"
+                target="_blank"
+                href="https://wa.me/918000540156?text=Hello%20Choudhary%20Medical%2C%20I%20want%20to%20enquire%20about%20Medical%20Dressing."
+            >
+                WhatsApp Enquiry
+            </a>
+
+        </div>
+
+
+        <div class="product-card">
+
+            <div class="product-icon">🧤</div>
+
+            <h3>Disposable Gloves</h3>
+
+            <p>
+                Disposable medical gloves for wholesale enquiry.
+            </p>
+
+            <a
+                class="enquiry-btn"
+                target="_blank"
+                href="https://wa.me/918000540156?text=Hello%20Choudhary%20Medical%2C%20I%20want%20to%20enquire%20about%20Disposable%20Gloves."
+            >
+                WhatsApp Enquiry
+            </a>
+
+        </div>
+
+
+        <div class="product-card">
+
+            <div class="product-icon">🩺</div>
+
+            <h3>Medical Equipment</h3>
+
+            <p>
+                Medical equipment and supplies for wholesale enquiry.
+            </p>
+
+            <a
+                class="enquiry-btn"
+                target="_blank"
+                href="https://wa.me/918000540156?text=Hello%20Choudhary%20Medical%2C%20I%20want%20to%20enquire%20about%20Medical%20Equipment."
+            >
+                WhatsApp Enquiry
+            </a>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    <div class="footer-content">
+
+        <div>
+            <h3>Choudhary Medical and Drug Distributors</h3>
+            <p>Pugal Phanta Bus Stand ke Samne</p>
+        </div>
+
+        <div>
+            <h4>Contact</h4>
+            <p>9828881312</p>
+            <p>8000540156</p>
+            <p>9352642174</p>
+            <p>choudharydistributors2024@gmail.com</p>
+        </div>
+
+    </div>
+
+    <div class="copyright">
+        © 2026 Choudhary Medical and Drug Distributors.
+        All Rights Reserved.
+    </div>
+
+</footer>
+
+
+<script src="script.js"></script>
+
+<script>
+    const searchInput = document.getElementById("productSearch");
+    const products = document.querySelectorAll(".product-card");
+
+    searchInput.addEventListener("input", function () {
+
+        const searchText = this.value.toLowerCase();
+
+        products.forEach(function(product) {
+
+            const productName = product.innerText.toLowerCase();
+
+            if (productName.includes(searchText)) {
+                product.style.display = "block";
+            } else {
+                product.style.display = "none";
+            }
+
+        });
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Product Enquiry | Choudhary Medical and Drug Distributors</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .enquiry-section {
+            padding: 70px 5%;
+            min-height: 70vh;
+            background: #f7faf9;
+        }
+
+        .enquiry-box {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .enquiry-box h1 {
+            color: #116466;
+            margin-bottom: 10px;
+        }
+
+        .enquiry-box > p {
+            color: #667777;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 7px;
+            color: #263838;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #d5e2df;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #116466;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .note {
+            margin-top: 15px;
+            padding: 12px;
+            background: #edf9f5;
+            border-radius: 9px;
+            color: #445555;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="logo">
+        Choudhary Medical<br>
+        <span>and Drug Distributors</span>
+    </div>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="complaint.html">Complaint</a>
+        <a href="feedback.html">Feedback</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <button class="menu-btn">☰</button>
+
+</header>
+
+
+<section class="enquiry-section">
+
+    <div class="enquiry-box">
+
+        <h1>Product Enquiry</h1>
+
+        <p>
+            Send us your product requirement. We will contact you on WhatsApp.
+        </p>
+
+
+        <form id="enquiryForm">
+
+            <div class="form-group">
+
+                <label>Customer Name</label>
+
+                <input
+                    type="text"
+                    id="customerName"
+                    placeholder="Enter your name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Mobile Number</label>
+
+                <input
+                    type="tel"
+                    id="mobile"
+                    placeholder="Enter mobile number"
+                    pattern="[0-9]{10}"
+                    maxlength="10"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Product Name</label>
+
+                <input
+                    type="text"
+                    id="product"
+                    placeholder="Enter product name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Quantity</label>
+
+                <input
+                    type="text"
+                    id="quantity"
+                    placeholder="Example: 10 boxes"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Message</label>
+
+                <textarea
+                    id="message"
+                    placeholder="Any additional requirement..."
+                ></textarea>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="submit-btn"
+            >
+                Send Enquiry on WhatsApp
+            </button>
+
+
+            <div class="note">
+                💬 Your enquiry will open directly in WhatsApp.
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    <div class="footer-content">
+
+        <div>
+            <h3>Choudhary Medical and Drug Distributors</h3>
+            <p>Pugal Phanta Bus Stand ke Samne</p>
+        </div>
+
+        <div>
+            <h4>Contact</h4>
+            <p>9828881312</p>
+            <p>8000540156</p>
+            <p>9352642174</p>
+            <p>choudharydistributors2024@gmail.com</p>
+        </div>
+
+    </div>
+
+    <div class="copyright">
+        © 2026 Choudhary Medical and Drug Distributors.
+        All Rights Reserved.
+    </div>
+
+</footer>
+
+
+<script src="script.js"></script>
+
+<script>
+
+document
+.getElementById("enquiryForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const name =
+        document.getElementById("customerName").value;
+
+    const mobile =
+        document.getElementById("mobile").value;
+
+    const product =
+        document.getElementById("product").value;
+
+    const quantity =
+        document.getElementById("quantity").value;
+
+    const message =
+        document.getElementById("message").value;
+
+    const whatsappMessage =
+        `Hello Choudhary Medical and Drug Distributors,
+
+I want to make a product enquiry.
+
+Customer Name: ${name}
+Mobile: ${mobile}
+Product: ${product}
+Quantity: ${quantity}
+Message: ${message}`;
+
+    const whatsappURL =
+        "https://wa.me/918000540156?text=" +
+        encodeURIComponent(whatsappMessage);
+
+    window.open(whatsappURL, "_blank");
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Track Order | Choudhary Medical and Drug Distributors</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f4f7fb;
+  color: #222;
+  min-height: 100vh;
+}
+
+.header {
+  background: white;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.header h1 {
+  color: #163a63;
+  font-size: 24px;
+}
+
+.header p {
+  color: #666;
+  margin-top: 6px;
+}
+
+.container {
+  max-width: 650px;
+  margin: 40px auto;
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+h2 {
+  text-align: center;
+  color: #163a63;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #777;
+  margin-bottom: 25px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #163a63;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background: #163a63;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+#result {
+  margin-top: 25px;
+}
+
+.order-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.order-box p {
+  margin: 13px 0;
+  line-height: 1.5;
+}
+
+.status {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 9px 15px;
+  border-radius: 20px;
+  background: #e8f1ff;
+  color: #163a63;
+  font-weight: bold;
+}
+
+.error {
+  background: #fff1f1;
+  color: #c62828;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.success {
+  background: #eefaf0;
+  color: #18752a;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.footer {
+  text-align: center;
+  color: #777;
+  font-size: 13px;
+  margin-top: 25px;
+  padding-bottom: 25px;
+}
+
+.whatsapp-btn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 12px 22px;
+  background: #25D366;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.whatsapp-btn:hover {
+  opacity: 0.9;
+}
+
+@media(max-width:600px) {
+
+  .card {
+    padding: 22px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .container {
+    margin: 25px auto;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>Choudhary Medical and Drug Distributors</h1>
+  <p>Order Tracking</p>
+</div>
+
+<div class="container">
+
+  <div class="card">
+
+    <h2>Track Your Order</h2>
+
+    <p class="subtitle">
+      Enter your Tracking ID to check your order status.
+    </p>
+
+    <label for="trackingId">Tracking ID</label>
+
+    <input
+      type="text"
+      id="trackingId"
+      placeholder="CMADD-20261003-001"
+      autocomplete="off"
+    >
+
+    <button id="trackButton">
+      Track Order
+    </button>
+
+    <div id="result"></div>
+
+  </div>
+
+  <div class="footer">
+
+    <p>Need help with your order?</p>
+
+    <a
+      href="https://wa.me/918000540156?text=Hello%20Choudhary%20Medical%20and%20Drug%20Distributors,%20I%20need%20help%20with%20my%20order."
+      target="_blank"
+      class="whatsapp-btn"
+    >
+      💬 WhatsApp Help
+    </a>
+
+    <p style="margin-top:10px;">
+      WhatsApp: 8000540156
+    </p>
+
+  </div>
+
+</div>
+
+<script>
+
+document
+  .getElementById("trackButton")
+  .addEventListener("click", trackOrder);
+
+document
+  .getElementById("trackingId")
+  .addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+      trackOrder();
+    }
+
+  });
+
+async function trackOrder() {
+
+  const input =
+    document.getElementById("trackingId");
+
+  const result =
+    document.getElementById("result");
+
+  const trackingId =
+    input.value.trim();
+
+  if (!trackingId) {
+
+    result.innerHTML =
+      '<div class="error">Please enter your Tracking ID.</div>';
+
+    return;
+  }
+
+  result.innerHTML =
+    '<p style="text-align:center;">🔍 Checking order...</p>';
+
+  try {
+
+    const url =
+      "/api/orders/" +
+      encodeURIComponent(trackingId);
+
+    const response =
+      await fetch(url);
+
+    const data =
+      await response.json();
+
+    if (
+      !response.ok ||
+      !data.success ||
+      !data.order
+    ) {
+
+      result.innerHTML =
+        '<div class="error">' +
+        (data.message || "Order not found.") +
+        '</div>';
+
+      return;
+    }
+
+    const order =
+      data.order;
+
+    result.innerHTML = `
+
+      <div class="success">
+        ✅ Order found successfully
+      </div>
+
+      <div class="order-box">
+
+        <p>
+          <strong>Tracking ID:</strong><br>
+          ${safe(order.tracking_id)}
+        </p>
+
+        <p>
+          <strong>Customer:</strong><br>
+          ${safe(order.customer_name)}
+        </p>
+
+        <p>
+          <strong>Order Details:</strong><br>
+          ${safe(order.order_details)}
+        </p>
+
+        <p>
+          <strong>Status:</strong><br>
+
+          <span class="status">
+            ${safe(order.status)}
+          </span>
+
+        </p>
+
+        <p>
+          <strong>Order Date:</strong><br>
+          ${formatDate(order.created_at)}
+        </p>
+
+        <p>
+          <strong>Last Updated:</strong><br>
+          ${formatDate(order.updated_at)}
+        </p>
+
+      </div>
+    `;
+
+  } catch (error) {
+
+    console.error(error);
+
+    result.innerHTML = `
+      <div class="error">
+        Unable to connect to server.<br>
+        Please try again.
+      </div>
+    `;
+
+  }
+}
+
+function safe(value) {
+
+  if (
+    value === null ||
+    value === undefined
+  ) {
+    return "-";
+  }
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    value;
+
+  return div.innerHTML;
+}
+
+function formatDate(value) {
+
+  if (!value) {
+    return "-";
+  }
+
+  return value;
+}
+
+</script>
+
+</body>
+</html>

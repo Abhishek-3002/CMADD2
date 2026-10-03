@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Complaint - Choudhary Medical</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .track-box {
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .track-box input {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .track-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #0b7a3b;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .result-box {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background: #f5faf7;
+            border-radius: 10px;
+        }
+
+        .error-box {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #ffeaea;
+            color: #a00000;
+            border-radius: 8px;
+        }
+
+        .status {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        <h2>Choudhary Medical and Drug Distributors</h2>
+    </div>
+</header>
+
+<main class="container">
+
+    <div class="track-box">
+
+        <h1>Track Your Complaint</h1>
+
+        <p>
+            Enter your Complaint ID to check the current status.
+        </p>
+
+        <input
+            type="text"
+            id="complaintId"
+            placeholder="Example: CMD937120"
+        >
+
+        <button
+            class="track-btn"
+            onclick="trackComplaint()"
+            id="trackBtn"
+        >
+            Track Complaint
+        </button>
+
+        <div class="result-box" id="resultBox">
+
+            <h3>Complaint Found ✅</h3>
+
+            <p>
+                <strong>Complaint ID:</strong>
+                <span id="resultId"></span>
+            </p>
+
+            <p>
+                <strong>Customer:</strong>
+                <span id="resultCustomer"></span>
+            </p>
+
+            <p>
+                <strong>Complaint Type:</strong>
+                <span id="resultType"></span>
+            </p>
+
+            <p>
+                <strong>Details:</strong>
+                <span id="resultDetails"></span>
+            </p>
+
+            <p class="status">
+                Status: <span id="resultStatus"></span>
+            </p>
+
+            <p>
+                Our team will contact you after reviewing your complaint.
+            </p>
+
+        </div>
+
+        <div class="error-box" id="errorBox"></div>
+
+    </div>
+
+</main>
+
+<script>
+async function trackComplaint() {
+
+    const input = document.getElementById("complaintId");
+    const complaintId = input.value.trim().toUpperCase();
+
+    const resultBox = document.getElementById("resultBox");
+    const errorBox = document.getElementById("errorBox");
+    const trackBtn = document.getElementById("trackBtn");
+
+    resultBox.style.display = "none";
+    errorBox.style.display = "none";
+
+    if (!complaintId) {
+        errorBox.textContent = "❌ Please enter your Complaint ID.";
+        errorBox.style.display = "block";
+        return;
+    }
+
+    trackBtn.disabled = true;
+    trackBtn.textContent = "Checking...";
+
+    try {
+
+        const response = await fetch(
+            "/api/complaints/" + encodeURIComponent(complaintId)
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Complaint not found."
+            );
+        }
+
+        const complaint = data.complaint;
+
+        document.getElementById("resultId").textContent =
+            complaint.complaint_id;
+
+        document.getElementById("resultCustomer").textContent =
+            complaint.customer_name;
+
+        document.getElementById("resultType").textContent =
+            complaint.complaint_type;
+
+        document.getElementById("resultDetails").textContent =
+            complaint.details;
+
+        document.getElementById("resultStatus").textContent =
+            complaint.status;
+
+        resultBox.style.display = "block";
+
+    } catch (error) {
+
+        errorBox.textContent = "❌ " + error.message;
+        errorBox.style.display = "block";
+
+    } finally {
+
+        trackBtn.disabled = false;
+        trackBtn.textContent = "Track Complaint";
+
+    }
+}
+</script>
+
+</body>
+</html>
