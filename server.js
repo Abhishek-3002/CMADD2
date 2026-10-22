@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
+const { registerCustomerAuth } = require("./auth");
 const Database = require("better-sqlite3");
 
 const app = express();
@@ -77,7 +78,7 @@ app.use(express.urlencoded({ extended: true }));
 // ===============================
 
 app.use(session({
-    secret: "CMADD-Abhishek-Admin-Session-2026",
+    secret: process.env.SESSION_SECRET || "CHANGE_THIS_SESSION_SECRET_BEFORE_DEPLOYMENT",
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -92,6 +93,9 @@ app.use(session({
 // ===============================
 
 app.use(express.static(__dirname));
+
+// Customer email/password authentication routes
+registerCustomerAuth(app, db);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
