@@ -34,6 +34,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
+
+    // Subtle scroll-reveal motion for service cards; graceful fallback when unsupported.
+    const cards = document.querySelectorAll(".service-card");
+    if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        cards.forEach(card => card.classList.add("reveal-ready"));
+        const revealObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("is-visible");
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: "0px 0px -25px 0px" });
+        cards.forEach(card => revealObserver.observe(card));
+    }
+
     // WhatsApp buttons
     const whatsappButtons =
         document.querySelectorAll(".whatsapp");
