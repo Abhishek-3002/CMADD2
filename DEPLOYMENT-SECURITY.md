@@ -32,7 +32,7 @@ This branch adds production startup guards and moves the SQLite database to an e
 - Adds baseline browser security headers (MIME sniffing/frame/referrer/permissions protections and HSTS in production).
 - Limits JSON and form request bodies to 1 MB and caps URL-encoded parameters.
 - Rejects unsafe browser requests with a mismatched Origin or an explicit cross-site Fetch Metadata signal.
-- Throttles admin login attempts to 8 per IP per 15-minute window in each running process.
+- Throttles admin login, customer login, and customer registration to 8 requests per IP per 15-minute window in each running process.
 
 Important limitations:
 - The login throttle is in-memory and resets on restart; it is not shared between instances and is not a substitute for a Render/WAF-level rate limit.
