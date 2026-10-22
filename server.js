@@ -86,8 +86,72 @@ db.prepare(`
     )
 `).run();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb", parameterLimit: 100 }));
+
+// Baseline browser security headers. Keep CSP report-only out of this patch to
+// avoid unexpectedly breaking the existing inline-script-heavy public pages.
+app.use((req, res, next) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+    if (isProduction) res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    next();
+});
+
+// Block cross-site browser requests that try to change server state.
+// Requests with no Origin (e.g. some command-line clients) are left to route auth.
+app.use((req, res, next) => {
+    const unsafe = !["GET", "HEAD", "OPTIONS"].includes(req.method);
+    if (!unsafe) return next();
+    const origin = req.get("origin");
+    if (origin) {
+        try {
+            const parsed = new URL(origin);
+            const expectedHost = req.get("x-forwarded-host") || req.get("host");
+            const expectedProtocol = isProduction ? "https:" : (req.protocol + ":");
+            if (parsed.host !== expectedHost || (isProduction && parsed.protocol !== "https:")) {
+                return res.status(403).json({ success: false, message: "Cross-site request blocked." });
+            }
+        } catch {
+            return res.status(403).json({ success: false, message: "Invalid request origin." });
+        }
+    }
+    if (req.get("sec-fetch-site") === "cross-site") {
+        return res.status(403).json({ success: false, message: "Cross-site request blocked." });
+    }
+    next();
+});
+
+// Lightweight per-process admin-login throttle. For multiple instances or
+// stronger abuse protection, add edge/WAF rate limits and a shared limiter.
+const adminLoginAttempts = new Map();
+const ADMIN_LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const ADMIN_LOGIN_MAX_ATTEMPTS = 8;
+app.use("/api/admin/login", (req, res, next) => {
+    if (req.method !== "POST") return next();
+    const now = Date.now();
+    const key = req.ip || req.socket.remoteAddress || "unknown";
+    let entry = adminLoginAttempts.get(key);
+    if (!entry || now - entry.windowStart >= ADMIN_LOGIN_WINDOW_MS) {
+        entry = { windowStart: now, count: 0 };
+    }
+    if (entry.count >= ADMIN_LOGIN_MAX_ATTEMPTS) {
+        const retryAfter = Math.max(1, Math.ceil((entry.windowStart + ADMIN_LOGIN_WINDOW_MS - now) / 1000));
+        res.setHeader("Retry-After", String(retryAfter));
+        return res.status(429).json({ success: false, message: "Too many login attempts. Please try again later." });
+    }
+    entry.count += 1;
+    adminLoginAttempts.set(key, entry);
+    if (adminLoginAttempts.size > 5000) {
+        for (const [ip, item] of adminLoginAttempts) {
+            if (now - item.windowStart >= ADMIN_LOGIN_WINDOW_MS) adminLoginAttempts.delete(ip);
+        }
+    }
+    next();
+});
 
 // ===============================
 // ADMIN SESSION
