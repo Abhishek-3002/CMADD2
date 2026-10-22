@@ -1,9 +1,9 @@
 name: CMADD2 syntax and integration checks
 on:
   push:
-    branches: [main, feature/customer-email-auth]
+    branches: [main, feature/customer-email-auth, audit/production-safety]
   pull_request:
-    branches: [main]
+    branches: [main, feature/customer-email-auth]
 jobs:
   node-checks:
     runs-on: ubuntu-latest
