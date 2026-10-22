@@ -5,7 +5,7 @@ const { registerCustomerAuth } = require("./auth");
 const Database = require("better-sqlite3");
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 // ===============================
 // DATABASE
@@ -78,13 +78,13 @@ app.use(express.urlencoded({ extended: true }));
 // ===============================
 
 app.use(session({
-    secret: process.env.SESSION_SECRET || "CHANGE_THIS_SESSION_SECRET_BEFORE_DEPLOYMENT",
+    secret: process.env.SESSION_SECRET || require("crypto").randomBytes(32).toString("hex"),
     resave: false,
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
         sameSite: "lax",
-        secure: false
+        secure: process.env.NODE_ENV === "production"
     }
 }));
 
@@ -367,8 +367,8 @@ app.post("/api/admin/login", (req, res) => {
 
     const { username, password } = req.body;
 
-    const ADMIN_USERNAME = "Abhishek";
-    const ADMIN_PASSWORD = "@Abhishek3002";
+    const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
     if (
         username === ADMIN_USERNAME &&
