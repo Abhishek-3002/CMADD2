@@ -110,7 +110,7 @@ app.use((req, res, next) => {
     if (origin) {
         try {
             const parsed = new URL(origin);
-            const expectedHost = req.get("x-forwarded-host") || req.get("host");
+            const expectedHost = req.get("host");
             const expectedProtocol = isProduction ? "https:" : (req.protocol + ":");
             if (parsed.host !== expectedHost || (isProduction && parsed.protocol !== "https:")) {
                 return res.status(403).json({ success: false, message: "Cross-site request blocked." });
