@@ -370,16 +370,28 @@ app.post("/api/admin/login", (req, res) => {
     const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
     const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-    if (
-        username === ADMIN_USERNAME &&
-        password === ADMIN_PASSWORD
-    ) {
+    if (!process.env.SESSION_SECRET || !ADMIN_USERNAME || !ADMIN_PASSWORD) {
+        console.error("Admin login unavailable: required environment variables are missing.");
+        return res.status(503).json({
+            success: false,
+            message: "Admin login is not configured. Please contact the site administrator."
+        });
+    }
 
-        req.session.isAdmin = true;
-
-        return res.json({
-            success: true,
-            message: "Login successful."
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        return req.session.regenerate((sessionError) => {
+            if (sessionError) {
+                console.error("Admin session regeneration failed:", sessionError);
+                return res.status(500).json({ success: false, message: "Unable to start admin session." });
+            }
+            req.session.isAdmin = true;
+            req.session.save((saveError) => {
+                if (saveError) {
+                    console.error("Admin session save failed:", saveError);
+                    return res.status(500).json({ success: false, message: "Unable to start admin session." });
+                }
+                return res.json({ success: true, message: "Login successful." });
+            });
         });
     }
 
