@@ -3,6 +3,7 @@ const path = require("path");
 const session = require("express-session");
 const { registerCustomerAuth } = require("./auth");
 const { registerCustomerLedger } = require("./ledger");
+const { registerMeetingRoutes } = require("./meetings");
 const Database = require("better-sqlite3");
 
 const app = express();
@@ -98,6 +99,7 @@ app.use(express.static(__dirname));
 // Customer email/password authentication routes
 registerCustomerAuth(app, db);
 registerCustomerLedger(app, db);
+registerMeetingRoutes(app, db);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
