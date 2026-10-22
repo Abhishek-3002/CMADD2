@@ -1,9 +1,9 @@
 name: CMADD2 syntax and integration checks
 on:
   push:
-    branches: [main, feature/customer-email-auth]
+    branches: [main, feature/customer-email-auth, audit/production-safety]
   pull_request:
-    branches: [main]
+    branches: [main, feature/customer-email-auth]
 jobs:
   node-checks:
     runs-on: ubuntu-latest
@@ -17,6 +17,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check server.js
+          node --check session-store.js
           node --check auth.js
           node --check ledger.js
           node --check meetings.js
@@ -25,7 +26,8 @@ jobs:
           node --check business.js
           node --check script.js
           node --check tests/integration.test.js
+          node --check tests/session-store.test.js
       - name: Install application dependencies
         run: npm install --no-audit --no-fund
       - name: Run isolated integration tests
-        run: node --test tests/integration.test.js
+        run: npm test

@@ -11,14 +11,28 @@ const Database = require("better-sqlite3");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
+const isProduction = process.env.NODE_ENV === "production";
+
+// Configure proxy trust before any middleware relies on req.ip or HTTPS detection.
+if (isProduction) app.set("trust proxy", 1);
+const dataDir = process.env.CMADD2_DATA_DIR
+    ? path.resolve(process.env.CMADD2_DATA_DIR)
+    : __dirname;
+
+if (isProduction && !process.env.CMADD2_DATA_DIR) {
+    throw new Error("Production safety check: set CMADD2_DATA_DIR to the mounted persistent-disk directory before starting.");
+}
+if (isProduction && !process.env.SESSION_SECRET) {
+    throw new Error("Production safety check: SESSION_SECRET must be configured.");
+}
 
 // ===============================
 // DATABASE
 // ===============================
 
-const db = new Database(
-    path.join(__dirname, "complaints.db")
-);
+const db = new Database(path.join(dataDir, "complaints.db"));
+db.pragma("journal_mode = WAL");
+db.pragma("foreign_keys = ON");
 
 // ===============================
 // TABLES
@@ -75,21 +89,104 @@ db.prepare(`
     )
 `).run();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "1mb", parameterLimit: 100 }));
+
+// Baseline browser security headers. Keep CSP report-only out of this patch to
+// avoid unexpectedly breaking the existing inline-script-heavy public pages.
+app.use((req, res, next) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+    if (isProduction) res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    next();
+});
+
+// Block cross-site browser requests that try to change server state.
+// Requests with no Origin (e.g. some command-line clients) are left to route auth.
+app.use((req, res, next) => {
+    const unsafe = !["GET", "HEAD", "OPTIONS"].includes(req.method);
+    if (!unsafe) return next();
+    const origin = req.get("origin");
+    if (origin) {
+        try {
+            const parsed = new URL(origin);
+            const expectedHost = req.get("host");
+            if (parsed.host !== expectedHost || (isProduction && parsed.protocol !== "https:")) {
+                return res.status(403).json({ success: false, message: "Cross-site request blocked." });
+            }
+        } catch {
+            return res.status(403).json({ success: false, message: "Invalid request origin." });
+        }
+    }
+    if (req.get("sec-fetch-site") === "cross-site") {
+        return res.status(403).json({ success: false, message: "Cross-site request blocked." });
+    }
+    next();
+});
+
+// Lightweight per-process authentication throttle. For multiple instances or
+// stronger abuse protection, add edge/WAF rate limits and a shared limiter.
+const adminLoginAttempts = new Map();
+const ADMIN_LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const ADMIN_LOGIN_MAX_ATTEMPTS = 8;
+app.use(["/api/admin/login", "/api/auth/login", "/api/auth/register"], (req, res, next) => {
+    if (req.method !== "POST") return next();
+    const now = Date.now();
+    const key = req.ip || req.socket.remoteAddress || "unknown";
+    let entry = adminLoginAttempts.get(key);
+    if (!entry || now - entry.windowStart >= ADMIN_LOGIN_WINDOW_MS) {
+        entry = { windowStart: now, count: 0 };
+    }
+    if (entry.count >= ADMIN_LOGIN_MAX_ATTEMPTS) {
+        const retryAfter = Math.max(1, Math.ceil((entry.windowStart + ADMIN_LOGIN_WINDOW_MS - now) / 1000));
+        res.setHeader("Retry-After", String(retryAfter));
+        return res.status(429).json({ success: false, message: "Too many authentication attempts. Please try again later." });
+    }
+    entry.count += 1;
+    adminLoginAttempts.set(key, entry);
+    if (adminLoginAttempts.size > 5000) {
+        for (const [ip, item] of adminLoginAttempts) {
+            if (now - item.windowStart >= ADMIN_LOGIN_WINDOW_MS) adminLoginAttempts.delete(ip);
+        }
+    }
+    next();
+});
 
 // ===============================
 // ADMIN SESSION
 // ===============================
 
+// Use the persistent SQLite database for sessions so restarts do not erase
+// login sessions. Proxy trust is configured before request middleware above.
+
+db.exec(`
+    CREATE TABLE IF NOT EXISTS web_sessions (
+        sid TEXT PRIMARY KEY,
+        sess TEXT NOT NULL,
+        expires INTEGER NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_web_sessions_expires ON web_sessions(expires);
+`);
+
+const { SQLiteSessionStore } = require("./session-store");
+const sessionStore = new SQLiteSessionStore(db);
+sessionStore.pruneStatement.run(Date.now());
+
 app.use(session({
-    secret: process.env.SESSION_SECRET || require("crypto").randomBytes(32).toString("hex"),
+    name: "cmadd2.sid",
+    store: sessionStore,
+    secret: process.env.SESSION_SECRET || require("crypto").randomBytes(48).toString("hex"),
     resave: false,
     saveUninitialized: false,
+    proxy: isProduction,
     cookie: {
         httpOnly: true,
         sameSite: "lax",
-        secure: process.env.NODE_ENV === "production"
+        secure: isProduction,
+        maxAge: 8 * 60 * 60 * 1000
     }
 }));
 
@@ -388,7 +485,12 @@ app.post("/api/admin/login", (req, res) => {
         });
     }
 
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    const supplied = Buffer.from(String(password ?? ""));
+    const expected = Buffer.from(String(ADMIN_PASSWORD));
+    const credentialsMatch = supplied.length === expected.length
+        && require("crypto").timingSafeEqual(supplied, expected);
+
+    if (username === ADMIN_USERNAME && credentialsMatch) {
         return req.session.regenerate((sessionError) => {
             if (sessionError) {
                 console.error("Admin session regeneration failed:", sessionError);
