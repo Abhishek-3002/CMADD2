@@ -1708,6 +1708,10 @@ footer p{margin-top:7px;opacity:.85}
 
 <script>
 let cart={};
+function trackSiteEvent(eventType){
+  try{fetch("/api/analytics/event",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({eventType,pagePath:location.pathname||"/products.html"}),keepalive:true}).catch(()=>{});}catch(_){}
+}
+trackSiteEvent("page_view");
 
 function changeQty(btn,delta){
   const span=btn.parentElement.querySelector('span');
@@ -1732,6 +1736,7 @@ function sendWhatsApp(){
   if(Object.keys(cart).length===0){alert('Cart is empty.');return;}
   let lines=Object.entries(cart).map(([name,q],i)=>`${i+1}. ${name} × ${q}`).join('\n');
   let msg='Hello Choudhary Medical and Drug Distributors,\n\nI want to enquire about:\n'+lines+'\n\nPlease share availability and details.';
+  trackSiteEvent("whatsapp_click");
   window.open('https://wa.me/918000540156?text='+encodeURIComponent(msg),'_blank');
 }
 
