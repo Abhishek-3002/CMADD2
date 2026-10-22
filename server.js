@@ -11,14 +11,25 @@ const Database = require("better-sqlite3");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
+const isProduction = process.env.NODE_ENV === "production";
+const dataDir = process.env.CMADD2_DATA_DIR
+    ? path.resolve(process.env.CMADD2_DATA_DIR)
+    : __dirname;
+
+if (isProduction && !process.env.CMADD2_DATA_DIR) {
+    throw new Error("Production safety check: set CMADD2_DATA_DIR to the mounted persistent-disk directory before starting.");
+}
+if (isProduction && !process.env.SESSION_SECRET) {
+    throw new Error("Production safety check: SESSION_SECRET must be configured.");
+}
 
 // ===============================
 // DATABASE
 // ===============================
 
-const db = new Database(
-    path.join(__dirname, "complaints.db")
-);
+const db = new Database(path.join(dataDir, "complaints.db"));
+db.pragma("journal_mode = WAL");
+db.pragma("foreign_keys = ON");
 
 // ===============================
 // TABLES
@@ -82,14 +93,77 @@ app.use(express.urlencoded({ extended: true }));
 // ADMIN SESSION
 // ===============================
 
+// Use the persistent SQLite database for sessions so restarts do not erase
+// login sessions. In production the reverse proxy is trusted for HTTPS detection.
+if (isProduction) app.set("trust proxy", 1);
+
+db.exec(`
+    CREATE TABLE IF NOT EXISTS web_sessions (
+        sid TEXT PRIMARY KEY,
+        sess TEXT NOT NULL,
+        expires INTEGER NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_web_sessions_expires ON web_sessions(expires);
+`);
+
+class SQLiteSessionStore extends session.Store {
+    constructor(database) {
+        super();
+        this.getStatement = database.prepare("SELECT sess, expires FROM web_sessions WHERE sid = ?");
+        this.setStatement = database.prepare("INSERT INTO web_sessions (sid, sess, expires) VALUES (?, ?, ?) ON CONFLICT(sid) DO UPDATE SET sess = excluded.sess, expires = excluded.expires");
+        this.destroyStatement = database.prepare("DELETE FROM web_sessions WHERE sid = ?");
+        this.touchStatement = database.prepare("UPDATE web_sessions SET expires = ? WHERE sid = ?");
+        this.pruneStatement = database.prepare("DELETE FROM web_sessions WHERE expires <= ?");
+    }
+    get(sid, callback) {
+        try {
+            const row = this.getStatement.get(sid);
+            if (!row) return callback(null, null);
+            if (row.expires <= Date.now()) {
+                this.destroyStatement.run(sid);
+                return callback(null, null);
+            }
+            callback(null, JSON.parse(row.sess));
+        } catch (error) { callback(error); }
+    }
+    set(sid, sess, callback = () => {}) {
+        try {
+            const expires = sess.cookie && sess.cookie.expires
+                ? new Date(sess.cookie.expires).getTime()
+                : Date.now() + 8 * 60 * 60 * 1000;
+            this.setStatement.run(sid, JSON.stringify(sess), expires);
+            callback(null);
+        } catch (error) { callback(error); }
+    }
+    destroy(sid, callback = () => {}) {
+        try { this.destroyStatement.run(sid); callback(null); }
+        catch (error) { callback(error); }
+    }
+    touch(sid, sess, callback = () => {}) {
+        try {
+            const expires = sess.cookie && sess.cookie.expires
+                ? new Date(sess.cookie.expires).getTime()
+                : Date.now() + 8 * 60 * 60 * 1000;
+            this.touchStatement.run(expires, sid);
+            callback(null);
+        } catch (error) { callback(error); }
+    }
+}
+const sessionStore = new SQLiteSessionStore(db);
+sessionStore.pruneStatement.run(Date.now());
+
 app.use(session({
-    secret: process.env.SESSION_SECRET || require("crypto").randomBytes(32).toString("hex"),
+    name: "cmadd2.sid",
+    store: sessionStore,
+    secret: process.env.SESSION_SECRET || require("crypto").randomBytes(48).toString("hex"),
     resave: false,
     saveUninitialized: false,
+    proxy: isProduction,
     cookie: {
         httpOnly: true,
         sameSite: "lax",
-        secure: process.env.NODE_ENV === "production"
+        secure: isProduction,
+        maxAge: 8 * 60 * 60 * 1000
     }
 }));
 
