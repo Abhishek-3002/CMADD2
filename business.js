@@ -1,5 +1,5 @@
 function registerBusinessRoutes(app, db) {
-  db.exec(\`
+  db.exec(`
     CREATE TABLE IF NOT EXISTS catalog_products (
       id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL DEFAULT '',
       category TEXT NOT NULL DEFAULT 'General', image_url TEXT NOT NULL DEFAULT '', active INTEGER NOT NULL DEFAULT 1,
@@ -24,18 +24,18 @@ function registerBusinessRoutes(app, db) {
       sale_id INTEGER REFERENCES business_sales(id), points INTEGER NOT NULL DEFAULT 2, note TEXT NOT NULL DEFAULT '',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
-  \`);
+  `);
   const admin = (req,res,next) => req.session && req.session.isAdmin ? next() : res.status(401).json({success:false,message:"Admin login required."});
   const rupees = n => Math.round(Number(n) * 100);
   const validAmount = n => Number.isFinite(Number(n)) && Number(n) >= 0 && Number(n) <= 1000000000;
   const today = () => new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
   const month = () => today().slice(0,7);
   const scoreFor = id => {
-    const row = db.prepare(\`SELECT
+    const row = db.prepare(`SELECT
       COALESCE(SUM(CASE WHEN entry_type='debit' THEN amount_paise ELSE 0 END),0) AS billed,
       COALESCE(SUM(CASE WHEN entry_type='credit' THEN amount_paise ELSE 0 END),0) AS paid,
       COALESCE(SUM(CASE WHEN entry_type='debit' THEN amount_paise ELSE -amount_paise END),0) AS balance
-      FROM customer_ledger WHERE customer_id=?\`).get(id);
+      FROM customer_ledger WHERE customer_id=?`).get(id);
     if (!row.billed && !row.paid) return {score:600, band:"New account", billedPaise:0, paidPaise:0, balancePaise:0, paymentRatio:0};
     const ratio = row.billed > 0 ? Math.min(1.2, row.paid / row.billed) : (row.paid > 0 ? 1 : 0);
     const balanceRatio = row.billed > 0 ? Math.max(0, row.balance) / row.billed : 0;
@@ -60,12 +60,12 @@ function registerBusinessRoutes(app, db) {
       const dt=db.prepare("SELECT target_paise v FROM business_targets WHERE period_type='day' AND period_key=?").get(t);
       const mt=db.prepare("SELECT target_paise v FROM business_targets WHERE period_type='month' AND period_key=?").get(m);
       const pct=(v,target)=>target>0?Math.round(v/target*100):0;
-      const mr=db.prepare(\`SELECT mr.id,mr.name,mr.mobile,mr.target_paise AS targetPaise,
+      const mr=db.prepare(`SELECT mr.id,mr.name,mr.mobile,mr.target_paise AS targetPaise,
         COALESCE(SUM(CASE WHEN s.sale_date LIKE ? THEN s.amount_paise ELSE 0 END),0) AS monthSalesPaise,
         COALESCE(SUM(CASE WHEN s.sale_date=? THEN s.amount_paise ELSE 0 END),0) AS todaySalesPaise,
         COALESCE((SELECT SUM(points) FROM mr_points_events p WHERE p.mr_id=mr.id),0) AS points
         FROM medical_representatives mr LEFT JOIN business_sales s ON s.mr_name=mr.name
-        WHERE mr.active=1 GROUP BY mr.id ORDER BY monthSalesPaise DESC\`).all(m+"%",t).map(x=>({...x,monthPercent:pct(x.monthSalesPaise,x.targetPaise),todayPercent:pct(x.todaySalesPaise,dt?.v||0),level:Math.floor(x.points/100)+1,levelName:["Starter","Bronze","Silver","Gold","Platinum","Diamond","Elite"][Math.min(6,Math.floor(x.points/100))]}));
+        WHERE mr.active=1 GROUP BY mr.id ORDER BY monthSalesPaise DESC`).all(m+"%",t).map(x=>({...x,monthPercent:pct(x.monthSalesPaise,x.targetPaise),todayPercent:pct(x.todaySalesPaise,dt?.v||0),level:Math.floor(x.points/100)+1,levelName:["Starter","Bronze","Silver","Gold","Platinum","Diamond","Elite"][Math.min(6,Math.floor(x.points/100))]}));
       const recent=db.prepare("SELECT id,sale_date AS date,amount_paise AS amountPaise,party_name AS partyName,mr_name AS mrName,note FROM business_sales ORDER BY id DESC LIMIT 100").all();
       res.json({success:true,today:{salesPaise:daySales,targetPaise:dt?.v||0,percent:pct(daySales,dt?.v||0)},month:{salesPaise:monthSales,targetPaise:mt?.v||0,percent:pct(monthSales,mt?.v||0)},mr,recent});
     } catch(e){console.error(e);res.status(500).json({success:false,message:"Unable to load business analysis."});}
