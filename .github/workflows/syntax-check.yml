@@ -1,0 +1,26 @@
+name: CMADD2 syntax checks
+on:
+  push:
+    branches: [main, feature/customer-email-auth]
+  pull_request:
+    branches: [main]
+jobs:
+  node-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check server and route modules
+        run: |
+          node --check server.js
+          node --check auth.js
+          node --check ledger.js
+          node --check meetings.js
+          node --check offers.js
+          node --check analytics.js
+          node --check business.js
+          node --check script.js
