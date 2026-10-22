@@ -28,7 +28,7 @@ function registerBusinessRoutes(app, db) {
   const admin = (req,res,next) => req.session && req.session.isAdmin ? next() : res.status(401).json({success:false,message:"Admin login required."});
   const rupees = n => Math.round(Number(n) * 100);
   const validAmount = n => Number.isFinite(Number(n)) && Number(n) >= 0 && Number(n) <= 1000000000;
-  const today = () => new Date().toISOString().slice(0,10);
+  const today = () => new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
   const month = () => today().slice(0,7);
   const scoreFor = id => {
     const row = db.prepare(\`SELECT
