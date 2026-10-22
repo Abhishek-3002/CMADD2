@@ -1747,5 +1747,8 @@ function searchProducts(){
   });
 }
 </script>
-</body>
+<script>
+async function loadAdminCatalogProducts(){try{const r=await fetch("/api/products/catalog"),d=await r.json();if(!r.ok||!d.success)return;const root=document.getElementById("products");for(const p of d.products){if(root.querySelector('[data-catalog-id="'+p.id+'"]'))continue;const card=document.createElement("article");card.className="product";card.dataset.catalogId=p.id;card.dataset.name=(p.name+" "+p.description+" "+p.category).toLowerCase();const box=document.createElement("div");box.className="imgbox";if(p.imageUrl){const im=document.createElement("img");im.loading="lazy";im.alt=p.name;im.src=p.imageUrl;box.appendChild(im)}else box.textContent="Product";const info=document.createElement("div");info.className="info";const brand=document.createElement("div");brand.className="brand";brand.textContent=p.category||"Product";const title=document.createElement("h3");title.textContent=p.name;const desc=document.createElement("p");desc.textContent=p.description;const qty=document.createElement("div");qty.className="qtyrow";const minus=document.createElement("button");minus.textContent="−";minus.onclick=()=>changeQty(minus,-1);const count=document.createElement("span");count.textContent="1";const plus=document.createElement("button");plus.textContent="+";plus.onclick=()=>changeQty(plus,1);qty.append(minus,count,plus);const add=document.createElement("button");add.className="add";add.textContent="Add to Cart";add.onclick=()=>addToCart(add,p.name);info.append(brand,title,desc,qty,add);card.append(box,info);root.appendChild(card)}searchProducts()}catch(_){}}
+loadAdminCatalogProducts();
+</script></body>
 </html>
