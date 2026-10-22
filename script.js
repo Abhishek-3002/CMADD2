@@ -50,6 +50,25 @@ document.addEventListener("DOMContentLoaded", function () {
         cards.forEach(card => revealObserver.observe(card));
     }
 
+
+    // Privacy-minimal analytics: record page views and WhatsApp link clicks only.
+    // No names, phone numbers, IP addresses, or message contents are collected.
+    const analyticsPage = window.location.pathname || "/";
+    const sendAnalytics = (eventType) => {
+        try {
+            fetch("/api/analytics/event", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ eventType, pagePath: analyticsPage }),
+                keepalive: true
+            }).catch(() => {});
+        } catch (_) { /* Analytics must never break core website actions. */ }
+    };
+    sendAnalytics("page_view");
+    document.querySelectorAll('a[href*="wa.me/"], a[href*="whatsapp.com/"]').forEach(link => {
+        link.addEventListener("click", () => sendAnalytics("whatsapp_click"));
+    });
+
     // WhatsApp buttons
     const whatsappButtons =
         document.querySelectorAll(".whatsapp");
