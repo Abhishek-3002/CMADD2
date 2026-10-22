@@ -27,6 +27,19 @@ This branch adds production startup guards and moves the SQLite database to an e
 - Confirm that public product pages do not expose prices.
 - Review rate limiting and CSRF protections before public launch; they are still separate follow-up security work unless explicitly added and tested.
 
+## Additional request protections on this branch
+
+- Adds baseline browser security headers (MIME sniffing/frame/referrer/permissions protections and HSTS in production).
+- Limits JSON and form request bodies to 1 MB and caps URL-encoded parameters.
+- Rejects unsafe browser requests with a mismatched Origin or an explicit cross-site Fetch Metadata signal.
+- Throttles admin login attempts to 8 per IP per 15-minute window in each running process.
+
+Important limitations:
+- The login throttle is in-memory and resets on restart; it is not shared between instances and is not a substitute for a Render/WAF-level rate limit.
+- Origin/Fetch Metadata checks are CSRF defense-in-depth, not a full CSRF-token implementation. Review every state-changing route and test customer/admin flows in staging.
+- These headers intentionally do not enforce Content-Security-Policy yet because the current site may rely on inline scripts/styles; deploy CSP in report-only mode first after inventorying the pages.
+- No control can guarantee that a website is impossible to hack. Keep dependencies patched, use unique secrets, restrict repository/hosting access, back up data, monitor logs, and arrange independent security testing.
+
 ## Known constraints
 
 - Render's default filesystem is ephemeral. Only files inside the actual persistent-disk mount path survive restarts/deploys. See https://render.com/docs/disks.
