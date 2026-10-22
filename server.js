@@ -12,6 +12,9 @@ const Database = require("better-sqlite3");
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const isProduction = process.env.NODE_ENV === "production";
+
+// Configure proxy trust before any middleware relies on req.ip or HTTPS detection.
+if (isProduction) app.set("trust proxy", 1);
 const dataDir = process.env.CMADD2_DATA_DIR
     ? path.resolve(process.env.CMADD2_DATA_DIR)
     : __dirname;
@@ -157,8 +160,7 @@ app.use(["/api/admin/login", "/api/auth/login", "/api/auth/register"], (req, res
 // ===============================
 
 // Use the persistent SQLite database for sessions so restarts do not erase
-// login sessions. In production the reverse proxy is trusted for HTTPS detection.
-if (isProduction) app.set("trust proxy", 1);
+// login sessions. Proxy trust is configured before request middleware above.
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS web_sessions (
@@ -525,7 +527,12 @@ app.post("/api/admin/login", (req, res) => {
         });
     }
 
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    const supplied = Buffer.from(String(password ?? ""));
+    const expected = Buffer.from(String(ADMIN_PASSWORD));
+    const credentialsMatch = supplied.length === expected.length
+        && require("crypto").timingSafeEqual(supplied, expected);
+
+    if (username === ADMIN_USERNAME && credentialsMatch) {
         return req.session.regenerate((sessionError) => {
             if (sessionError) {
                 console.error("Admin session regeneration failed:", sessionError);
