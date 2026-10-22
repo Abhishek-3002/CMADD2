@@ -111,7 +111,6 @@ app.use((req, res, next) => {
         try {
             const parsed = new URL(origin);
             const expectedHost = req.get("host");
-            const expectedProtocol = isProduction ? "https:" : (req.protocol + ":");
             if (parsed.host !== expectedHost || (isProduction && parsed.protocol !== "https:")) {
                 return res.status(403).json({ success: false, message: "Cross-site request blocked." });
             }
@@ -125,12 +124,12 @@ app.use((req, res, next) => {
     next();
 });
 
-// Lightweight per-process admin-login throttle. For multiple instances or
+// Lightweight per-process authentication throttle. For multiple instances or
 // stronger abuse protection, add edge/WAF rate limits and a shared limiter.
 const adminLoginAttempts = new Map();
 const ADMIN_LOGIN_WINDOW_MS = 15 * 60 * 1000;
 const ADMIN_LOGIN_MAX_ATTEMPTS = 8;
-app.use("/api/admin/login", (req, res, next) => {
+app.use(["/api/admin/login", "/api/auth/login", "/api/auth/register"], (req, res, next) => {
     if (req.method !== "POST") return next();
     const now = Date.now();
     const key = req.ip || req.socket.remoteAddress || "unknown";
@@ -141,7 +140,7 @@ app.use("/api/admin/login", (req, res, next) => {
     if (entry.count >= ADMIN_LOGIN_MAX_ATTEMPTS) {
         const retryAfter = Math.max(1, Math.ceil((entry.windowStart + ADMIN_LOGIN_WINDOW_MS - now) / 1000));
         res.setHeader("Retry-After", String(retryAfter));
-        return res.status(429).json({ success: false, message: "Too many login attempts. Please try again later." });
+        return res.status(429).json({ success: false, message: "Too many authentication attempts. Please try again later." });
     }
     entry.count += 1;
     adminLoginAttempts.set(key, entry);
