@@ -5,6 +5,7 @@ const { registerCustomerAuth } = require("./auth");
 const { registerCustomerLedger } = require("./ledger");
 const { registerMeetingRoutes } = require("./meetings");
 const { registerOfferRoutes } = require("./offers");
+const { registerAnalyticsRoutes } = require("./analytics");
 const Database = require("better-sqlite3");
 
 const app = express();
@@ -102,6 +103,7 @@ registerCustomerAuth(app, db);
 registerCustomerLedger(app, db);
 registerMeetingRoutes(app, db);
 registerOfferRoutes(app, db);
+registerAnalyticsRoutes(app, db);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
