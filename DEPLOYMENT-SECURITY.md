@@ -20,12 +20,12 @@ This branch adds production startup guards and moves the SQLite database to an e
 
 - Make a consistent SQLite backup using SQLite's backup API or `VACUUM INTO` while connected to the source database; avoid copying only the main file while WAL writes are active.
 - Restore the backup into a separate staging directory and verify expected row counts for `complaints`, `feedback`, `enquiries`, `orders`, and customer/business tables.
-- Run syntax checks and integration tests on this branch.
-- Test session create/read/touch/expire/destroy behavior and verify that an authenticated session survives a server restart in staging.
+- Run `npm test` and the GitHub Actions syntax/integration workflow on this branch.
+- Before production rollout, add or run dedicated tests for the custom SQLite session store's create/read/touch/expire/destroy behavior and verify that an authenticated session survives a server restart in staging.
 - Test that customer and admin sessions are isolated, logout invalidates a session, and Secure/HttpOnly/SameSite cookie attributes are correct under HTTPS.
 - Regression-test complaint submission/tracking, feedback, product enquiry, order tracking, and admin login against staging.
 - Confirm that public product pages do not expose prices.
-- Review rate limiting and CSRF protections before public launch; they are still separate follow-up security work unless explicitly added and tested.
+- Before public launch, complete route-by-route CSRF review/testing and configure edge/WAF-level rate limits; current Origin/Fetch Metadata checks and in-process throttling are defense-in-depth only.
 
 ## Additional request protections on this branch
 
