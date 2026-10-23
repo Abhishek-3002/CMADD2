@@ -969,6 +969,9 @@ app.get(
         }
     }
 );
+// Register the additional customer-facing and admin modules.
+require("./cmadd-features")(app, db, requireAdmin);
+
 // ===============================
 // START SERVER
 // ===============================
