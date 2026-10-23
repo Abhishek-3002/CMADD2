@@ -265,9 +265,11 @@ document
     const message =
         document.getElementById("message").value;
 
+    const enquiryId = "CMADD-ENQ-" + new Date().toISOString().slice(0,10).replace(/-/g,"") + "-" + Math.random().toString(36).slice(2,7).toUpperCase();
     const whatsappMessage =
         `Hello Choudhary Medical and Drug Distributors,
 
+Enquiry ID: ${enquiryId}
 I want to make a product enquiry.
 
 Customer Name: ${name}
@@ -280,6 +282,8 @@ Message: ${message}`;
         "https://wa.me/918000540156?text=" +
         encodeURIComponent(whatsappMessage);
 
+    const note = document.querySelector(".note");
+    if (note) note.textContent = "Your Enquiry ID: " + enquiryId + " — opening WhatsApp with your enquiry.";
     window.open(whatsappURL, "_blank");
 
 });
