@@ -26,5 +26,5 @@ async function toggleCampaign(id,active){try{await api('/api/admin/campaigns/'+i
 async function loadAnalytics(){try{const d=await api('/api/admin/analytics'),s=d.summary;$('analytics').innerHTML='<div class="grid">'+[['Unique visitor keys',s.visitors],['Page views',s.pageViews||0],['Product views',s.productViews||0],['WhatsApp clicks',s.whatsappClicks||0],['Enquiry clicks',s.enquiryClicks||0],['Total tracked events',s.events]].map(x=>'<div class="item"><small>'+x[0]+'</small><h2>'+Number(x[1]||0).toLocaleString()+'</h2></div>').join('')+'</div><h3>Recent events</h3>'+d.recent.map(x=>'<div class="item">'+esc(x.event_type)+' · '+esc(x.page)+' · '+esc(x.detail)+'<br><small>'+esc(x.created_at)+'</small></div>').join('')}catch(e){$('analytics').textContent=e.message}}
 check();
 </script>
-<script src="/ai-assistant.js?v=2" defer></script>
+<script src="/ai-assistant.js?v=3" defer></script>
 </body></html>
