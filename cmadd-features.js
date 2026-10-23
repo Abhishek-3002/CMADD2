@@ -102,7 +102,7 @@ module.exports = function registerCmaddFeatures(app, db, requireAdmin) {
   app.get("/api/admin/campaigns",requireAdmin,(req,res)=>res.json({success:true,campaigns:db.prepare("SELECT * FROM campaigns ORDER BY id DESC").all()));
   app.post("/api/admin/campaigns",requireAdmin,(req,res)=>{
     const b=req.body, title=txt(b.title,120), start=txt(b.startDate,10), end=txt(b.endDate,10);
-    if(!title||!/^\\d{4}-\\d{2}-\\d{2}$/.test(start)||!/^\\d{4}-\\d{2}-\\d{2}$/.test(end)||end<start) return res.status(400).json({success:false,message:"Enter title and valid dates."});
+    if(!title||!/^\d{4}-\d{2}-\d{2}$/.test(start)||!/^\d{4}-\d{2}-\d{2}$/.test(end)||end<start) return res.status(400).json({success:false,message:"Enter title and valid dates."});
     const r=db.prepare("INSERT INTO campaigns(title,occasion,details,categories,products,start_date,end_date,coupon,banner_url,active) VALUES(?,?,?,?,?,?,?,?,?,?)").run(title,txt(b.occasion,80),txt(b.details,1000),txt(b.categories,300),txt(b.products,500),start,end,txt(b.coupon,50),txt(b.bannerUrl,500),b.active===false?0:1);
     res.json({success:true,id:r.lastInsertRowid});
   });
