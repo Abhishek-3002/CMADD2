@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Customer Portal | CMADD</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px Arial,sans-serif;background:#f3f7f8;color:#16302f}header{background:#fff;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 12px #0001;gap:12px;flex-wrap:wrap}header a,.btn{background:#087e68;color:#fff;padding:11px 15px;border-radius:9px;text-decoration:none;border:0;cursor:pointer;font-weight:700}.wrap{max-width:1000px;margin:25px auto;padding:0 15px}.hero{padding:26px;border-radius:18px;background:linear-gradient(130deg,#dff8ee,#fff);margin-bottom:18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}.card{background:#fff;border-radius:16px;padding:22px;box-shadow:0 6px 22px #1231;margin-bottom:16px}h1,h2{margin-top:0}label{display:block;font-weight:700;margin:12px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid #cad8d5;border-radius:8px;font:inherit}button{font:inherit}.msg{margin-top:12px;padding:10px;border-radius:8px;background:#eef8f3;white-space:pre-wrap}.campaign{border:1px solid #e1ebe7;border-radius:12px;padding:14px;margin:10px 0}.hidden{display:none}.muted{color:#647572;font-size:14px}nav{display:flex;gap:8px;flex-wrap:wrap}@media(max-width:600px){header{align-items:flex-start}}
+</style></head><body>
+<header><strong>Choudhary Medical & Drug Distributors</strong><nav><a href="index.html">Home</a><a href="products.html">Products</a><a href="admin-login.html">Admin</a></nav></header>
+<main class="wrap"><section class="hero"><h1>Customer & Medical Store Portal</h1><p>Request a shop visit or online meeting, register for a customer account, and view current festival campaigns.</p><p class="muted">Product rates are not displayed here. Offers and account balances are handled privately.</p></section>
+<section class="card"><h2>🎉 Current Festival Offers</h2><div id="campaigns">Loading current campaigns…</div></section>
+<div class="grid">
+<section class="card"><h2>📅 Request a Meeting</h2><form id="meetingForm">
+<label>Your name *</label><input name="customerName" required maxlength="100">
+<label>Medical store name *</label><input name="medicalName" required maxlength="120">
+<label>Mobile number *</label><input name="mobile" required inputmode="tel">
+<label>Shop address *</label><textarea name="address" required rows="2"></textarea>
+<label>Meeting type *</label><select name="meetingType"><option>Offline</option><option>Online</option></select>
+<label>Preferred date and time *</label><input name="preferredDateTime" type="datetime-local" required>
+<label>Notes (optional)</label><textarea name="notes" rows="2"></textarea><button class="btn">Submit Meeting Request</button></form><div id="meetingMsg" class="msg hidden"></div><p class="muted">After submitting, you may contact us on WhatsApp yourself to discuss your request.</p><a id="waMeeting" class="btn" target="_blank" rel="noopener" href="https://wa.me/918000540156">Send WhatsApp Enquiry</a></section>
+<section class="card"><h2>📝 Customer Registration</h2><form id="registerForm">
+<label>Your name *</label><input name="customerName" required>
+<label>Medical store name *</label><input name="medicalName" required>
+<label>Email *</label><input name="email" type="email" required>
+<label>Mobile *</label><input name="mobile" required inputmode="tel">
+<label>Password (minimum 8 characters) *</label><input name="password" type="password" minlength="8" required>
+<button class="btn">Register for Approval</button></form><div id="registerMsg" class="msg hidden"></div><p class="muted">Admin approval is required before you can sign in.</p></section>
+</div>
+<div class="grid">
+<section class="card"><h2>🔐 Customer Login</h2><form id="loginForm"><label>Email</label><input name="email" type="email" required><label>Password</label><input name="password" type="password" required><button class="btn">Sign In</button></form><div id="loginMsg" class="msg hidden"></div></section>
+<section class="card"><h2>📒 My Private Ledger</h2><p class="muted">Sign in after your account is approved to view only your medical store's balance.</p><button id="ledgerBtn" class="btn">View My Ledger</button><button id="logoutBtn" class="btn" style="margin-left:6px;background:#475569">Sign Out</button><div id="ledgerMsg" class="msg hidden"></div></section>
+</div></main>
+<script>
+const $=id=>document.getElementById(id);function show(id,msg){$(id).textContent=msg;$(id).classList.remove('hidden')}
+async function api(url,opts={}){const r=await fetch(url,{credentials:'same-origin',headers:{'Content-Type':'application/json',...(opts.headers||{})},...opts});const d=await r.json().catch(()=>({message:'Unexpected server response'}));if(!r.ok)throw Object.assign(new Error(d.message||'Request failed'),{data:d});return d}
+$('meetingForm').addEventListener('submit',async e=>{e.preventDefault();const b=Object.fromEntries(new FormData(e.target));try{const d=await api('/api/meetings',{method:'POST',body:JSON.stringify(b)});show('meetingMsg',d.message+'\nMeeting ID: '+d.meetingId);$('waMeeting').href='https://wa.me/918000540156?text='+encodeURIComponent('Hello, I submitted a meeting request. Meeting ID: '+d.meetingId+'. Medical: '+b.medicalName+'. Preferred time: '+b.preferredDateTime);e.target.reset()}catch(x){show('meetingMsg',x.message)}});
+$('registerForm').addEventListener('submit',async e=>{e.preventDefault();try{const d=await api('/api/customers/register',{method:'POST',body:JSON.stringify(Object.fromEntries(new FormData(e.target)))});show('registerMsg',d.message);e.target.reset()}catch(x){show('registerMsg',x.message)}});
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();try{const d=await api('/api/customers/login',{method:'POST',body:JSON.stringify(Object.fromEntries(new FormData(e.target)))});show('loginMsg','Welcome, '+d.customer.name+'. You are signed in.');await loadLedger()}catch(x){show('loginMsg',x.message)}});
+async function loadLedger(){try{const d=await api('/api/customers/me');show('ledgerMsg','Medical: '+d.customer.medical_name+'\nOutstanding balance: ₹'+Number(d.ledger.balance||0).toLocaleString('en-IN')+'\nNote: '+(d.ledger.note||'No note')+'\nUpdated: '+(d.ledger.updated_at||'Not updated yet'))}catch(x){show('ledgerMsg',x.message)}}
+$('ledgerBtn').onclick=loadLedger;$('logoutBtn').onclick=async()=>{try{await api('/api/customers/logout',{method:'POST'});show('ledgerMsg','You have been signed out.')}catch(x){show('ledgerMsg',x.message)}};
+(async()=>{try{const d=await api('/api/campaigns');$('campaigns').innerHTML=d.campaigns.length?d.campaigns.map(c=>'<article class="campaign">'+(c.banner_url?'<img src="'+c.banner_url.replace(/"/g,'&quot;')+'" alt="" style="max-width:100%;border-radius:8px">':'')+'<h3>'+esc(c.title)+'</h3><p>'+esc(c.occasion||'Special offer')+'</p><p>'+esc(c.details||'Contact us to learn more.')+'</p><p class="muted">Valid '+esc(c.start_date)+' to '+esc(c.end_date)+'</p></article>').join(''):'No active festival offers at the moment.'}catch(e){$('campaigns').textContent='Offers will appear here when available.'}})();
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const key='cmadd-visitor-key';let vk=localStorage.getItem(key);if(!vk){vk=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());localStorage.setItem(key,vk)}fetch('/api/activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitorKey:vk,eventType:'page_view',page:location.pathname})}).catch(()=>{});
+document.addEventListener('click',e=>{const a=e.target.closest('a');if(a&&a.href.includes('wa.me'))fetch('/api/activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitorKey:vk,eventType:'whatsapp_click',page:location.pathname,detail:a.href})}).catch(()=>{})});
+</script></body></html>
