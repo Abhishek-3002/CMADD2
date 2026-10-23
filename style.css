@@ -403,3 +403,40 @@ footer { border-top: 3px solid #c69a38; }
     *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
     .service-card.reveal-ready { opacity: 1; transform: none; }
 }
+
+
+/* CMADD2 premium responsive polish */
+body { overflow-x: hidden; }
+button, input, textarea, select { font: inherit; }
+a, button { -webkit-tap-highlight-color: transparent; }
+input:focus, textarea:focus, select:focus { border-color:#16875b !important; box-shadow:0 0 0 4px rgba(22,135,91,.12); }
+.enquiry-box, .complaint-box, .card { animation: contentEnter .65s both; }
+.form-group input, .form-group textarea, .form-group select { max-width:100%; transition:border-color .2s,box-shadow .2s; }
+.call-fab { position:fixed; right:18px; bottom:20px; z-index:999; border:0; border-radius:999px; padding:14px 19px; background:linear-gradient(135deg,#116466,#16875b); color:#fff; font-weight:800; box-shadow:0 12px 30px #11646644; cursor:pointer; animation:softPulse 2.5s infinite; }
+.call-overlay { position:fixed; inset:0; z-index:1000; display:none; align-items:center; justify-content:center; padding:18px; background:rgba(8,25,28,.62); backdrop-filter:blur(8px); }
+.call-overlay.open { display:flex; animation:fadeIn .2s ease both; }
+.call-panel { width:min(100%,390px); padding:27px; border-radius:22px; background:#fff; box-shadow:0 24px 80px #0004; animation:contentEnter .25s ease both; }
+.call-panel h2 { color:#116466; margin:0 0 7px; }
+.call-panel p { color:#667777; margin-bottom:18px; }
+.call-choice { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:15px; margin-top:10px; border:1px solid #e1ece8; border-radius:14px; color:#163b3b; text-decoration:none; transition:transform .2s,border-color .2s; }
+.call-choice:hover { transform:translateY(-2px); border-color:#16875b; }
+.call-choice strong { display:block; }
+.call-choice small { color:#71817e; }
+.call-choice .call-now { color:#16875b; font-weight:800; }
+.call-close { float:right; border:0; background:#f0f5f3; border-radius:50%; width:34px; height:34px; cursor:pointer; font-size:20px; }
+@keyframes fadeIn { from {opacity:0} to {opacity:1} }
+@media(max-width:600px) {
+ .header { padding:13px 4%; min-height:68px; }
+ .logo { font-size:16px; }
+ .logo span { font-size:12px; }
+ .hero { padding:48px 5% 40px; gap:28px; }
+ .hero h1 { font-size:clamp(30px,8vw,40px); overflow-wrap:anywhere; }
+ .hero-content > p:not(.small-title) { font-size:16px; }
+ .services { padding:52px 5%; }
+ .section-title h2 { font-size:28px; }
+ .service-card { padding:24px; }
+ .cta { margin:30px 4%; padding:30px 20px; }
+ .enquiry-section { padding:35px 4%; }
+ .enquiry-box, .complaint-box, .card { padding:24px 18px; }
+ .call-fab { right:13px; bottom:14px; padding:13px 17px; }
+}
