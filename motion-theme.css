@@ -48,3 +48,20 @@ footer{background:#20242b!important}
 @keyframes cmadd-orbit-glow{from{transform:translate3d(0,0,0) scale(.92)}to{transform:translate3d(-18px,14px,0) scale(1.08)}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;transform:none!important}}
 @media(max-width:600px){.hero:after{width:180px;height:180px;right:-45px}.hero{background:linear-gradient(150deg,#fff,#f2f7ff)!important}.hero-card,.service-card,.card,.product{border-radius:14px}}
+
+
+/* Site-wide CMADD2 call selector: responsive glass UI */
+.cmadd-call-fab{position:fixed;right:16px;bottom:16px;z-index:9990;border:1px solid #ffffff88;border-radius:999px;padding:14px 19px;background:linear-gradient(135deg,#0866ff,#0047cc);color:#fff;font-weight:800;box-shadow:0 10px 28px #0866ff55;cursor:pointer;font:inherit;font-weight:800}
+.cmadd-call-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(2,10,25,.68);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);align-items:center;justify-content:center;padding:18px}
+.cmadd-call-overlay.cmadd-open{display:flex;animation:cmadd-call-in .22s ease both}
+.cmadd-call-panel{width:min(100%,430px);border:1px solid #ffffff80;border-radius:25px;padding:25px;background:linear-gradient(145deg,#fff,#f1f7ff);box-shadow:0 25px 90px #0005;position:relative;color:#102b49}
+.cmadd-call-panel h2{font-size:clamp(24px,6vw,32px);color:#102b49;margin:4px 0 7px}
+.cmadd-call-panel p{color:#607287;margin-bottom:20px}
+.cmadd-call-choice{display:flex;align-items:center;gap:13px;width:100%;padding:15px;margin:10px 0;border:1px solid #d8e5f5;border-radius:16px;background:#fff;color:#102b49;text-decoration:none;box-shadow:0 8px 20px #0b4d8a0d;transition:transform .2s,border .2s}
+.cmadd-call-choice:hover{transform:translateY(-2px);border-color:#0866ff}
+.cmadd-call-avatar{width:44px;height:44px;flex:0 0 44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#0866ff,#46c6ff);color:#fff;font-weight:900}
+.cmadd-call-choice b{display:block;font-size:16px}.cmadd-call-choice small{display:block;color:#64748b;margin-top:2px}.cmadd-call-arrow{margin-left:auto;color:#0866ff;font-size:22px}
+.cmadd-call-close{position:absolute;right:14px;top:14px;width:38px;height:38px;border:1px solid #dce7f4;border-radius:50%;background:#fff;color:#16304b;font-size:22px;cursor:pointer}
+@keyframes cmadd-call-in{from{opacity:0}to{opacity:1}}
+@media(max-width:600px){.cmadd-call-fab{right:12px;bottom:12px;padding:13px 16px}.cmadd-call-panel{padding:23px 18px}}
+@media(prefers-reduced-motion:reduce){.cmadd-call-overlay.cmadd-open{animation:none}.cmadd-call-choice{transition:none}}
