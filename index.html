@@ -1,298 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choudhary Medical and Drug Distributors</title>
-    <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="motion-theme.css?v=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123b5d">
+<title>Choudhary Medical and Drug Distributors | Bikaner</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="motion-theme.css?v=2">
+<style>
+.quick-enquiry{padding:64px 18px;background:linear-gradient(135deg,#eaf7ff,#f5fff9);position:relative;overflow:hidden}
+.quick-enquiry:before{content:"";position:absolute;width:280px;height:280px;border-radius:50%;background:#16a08512;top:-90px;right:-70px;animation:floatGlow 7s ease-in-out infinite}
+.enquiry-wrap{position:relative;max-width:850px;margin:auto;background:#fff;padding:clamp(22px,4vw,42px);border-radius:24px;box-shadow:0 18px 55px #123b5d18;border:1px solid #dcebf2;animation:cardEnter .7s ease both}
+.enquiry-wrap h2{color:#123b5d;font-size:clamp(25px,4vw,36px);margin:8px 0 10px}
+.enquiry-wrap>p{color:#657783;line-height:1.6;margin-bottom:24px}
+.enquiry-tag{color:#16a085;font-size:12px;letter-spacing:2px;font-weight:800}
+.enquiry-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.enquiry-field{display:flex;flex-direction:column;gap:7px;text-align:left}
+.enquiry-field.full{grid-column:1/-1}
+.enquiry-field label{font-size:13px;font-weight:700;color:#23465c}
+.enquiry-field input,.enquiry-field textarea,.enquiry-field select{width:100%;padding:13px 14px;border:1px solid #d5e1e8;border-radius:12px;background:#fbfdff;font:inherit;outline:none;transition:border .2s,box-shadow .2s,transform .2s}
+.enquiry-field input:focus,.enquiry-field textarea:focus,.enquiry-field select:focus{border-color:#16a085;box-shadow:0 0 0 4px #16a08518;transform:translateY(-1px)}
+.enquiry-field textarea{min-height:100px;resize:vertical}
+.wa-submit{width:100%;margin-top:20px;border:0;border-radius:13px;padding:15px 20px;background:linear-gradient(135deg,#16a085,#0b8b63);color:white;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 9px 22px #16a08535;transition:transform .2s,box-shadow .2s}
+.wa-submit:hover{transform:translateY(-3px);box-shadow:0 14px 28px #16a08545}
+.form-note{font-size:12px;color:#6d7c86;margin-top:12px;text-align:center}
+@keyframes floatGlow{0%,100%{transform:translateY(0)}50%{transform:translateY(18px)}}
+@keyframes cardEnter{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.enquiry-grid{grid-template-columns:1fr}.enquiry-field.full{grid-column:auto}.quick-enquiry{padding:38px 13px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
 </head>
-
 <body>
-
 <header class="header">
-    <div class="logo">
-        Choudhary Medical<br>
-        <span>and Drug Distributors</span>
-    </div>
-
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="products.html">Products</a>
-        <a href="complaint.html">Complaint</a>
-        <a href="feedback.html">Feedback</a>
-        <a href="contact.html">Contact</a>
-        <a href="customer-portal.html">Customer Portal</a>
-    </nav>
-
-    <button class="menu-btn">☰</button>
+  <div class="logo">Choudhary Medical<br><span>and Drug Distributors</span></div>
+  <nav>
+    <a href="index.html">Home</a><a href="products.html">Products</a>
+    <a href="#quick-enquiry">Quick Enquiry</a><a href="complaint.html">Complaint</a>
+    <a href="feedback.html">Feedback</a><a href="track-order.html">Track Order</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <button class="menu-btn" type="button" aria-label="Open menu">☰</button>
 </header>
 
 <section class="hero">
-
-    <div class="hero-content">
-
-        <p class="small-title">WELCOME TO OUR WEBSITE</p>
-
-        <h1>
-            Choudhary Medical<br>
-            and Drug Distributors
-        </h1>
-
-        <p>
-            Your trusted medical wholesale partner in Bikaner.
-            Fast product enquiry, customer support and easy online communication.
-        </p>
-
-        <div class="hero-buttons">
-
-            <a href="products.html" class="btn">
-                Browse Products
-            </a>
-
-            <a href="track-order.html" class="btn">
-                📦 Track Order
-            </a>
-
-            <a href="https://wa.me/918000540156"
-               class="btn whatsapp"
-               target="_blank">
-                WhatsApp Enquiry
-            </a>
-
-        </div>
-
+  <div class="hero-content">
+    <p class="small-title">WELCOME TO OUR WEBSITE</p>
+    <h1>Choudhary Medical<br>and Drug Distributors</h1>
+    <p>Your trusted medical wholesale partner in Bikaner. Browse products, send requirements on WhatsApp, and contact our team easily.</p>
+    <div class="hero-buttons">
+      <a href="products.html" class="btn">Browse Products</a>
+      <a href="#quick-enquiry" class="btn">Quick Enquiry ↓</a>
+      <a href="https://wa.me/918000540156" class="btn whatsapp" target="_blank" rel="noopener">WhatsApp Enquiry</a>
     </div>
-
-    <div class="hero-card">
-
-        <div class="card-icon">✦</div>
-
-        <h2>Easy Online Enquiry</h2>
-
-        <p>
-            Check our product catalog and send your enquiry
-            quickly through WhatsApp.
-        </p>
-
-        <a href="contact.html">
-            Send Enquiry →
-        </a>
-
-    </div>
-
+  </div>
+  <div class="hero-card">
+    <div class="card-icon">✦</div><h2>Easy Medical Enquiry</h2>
+    <p>Fill in your name and medical shop details. Your enquiry opens directly in WhatsApp.</p>
+    <a href="#quick-enquiry">Start Enquiry →</a>
+  </div>
 </section>
 
+<section class="quick-enquiry" id="quick-enquiry">
+  <div class="enquiry-wrap">
+    <span class="enquiry-tag">FAST • SIMPLE • NO LOGIN</span>
+    <h2>Medical Shop Enquiry</h2>
+    <p>Apni details bharein aur button dabayein. Aapka message WhatsApp par Choudhary Medical and Drug Distributors ko ready ho jayega.</p>
+    <form id="medicalEnquiryForm">
+      <div class="enquiry-grid">
+        <div class="enquiry-field"><label for="customerName">Your Name *</label><input id="customerName" name="customerName" autocomplete="name" required placeholder="Enter your full name"></div>
+        <div class="enquiry-field"><label for="medicalName">Medical / Shop Name *</label><input id="medicalName" name="medicalName" required placeholder="Enter medical shop name"></div>
+        <div class="enquiry-field"><label for="mobile">Mobile Number *</label><input id="mobile" name="mobile" type="tel" inputmode="numeric" pattern="[0-9+() -]{10,16}" autocomplete="tel" required placeholder="Your contact number"></div>
+        <div class="enquiry-field"><label for="city">City / Area *</label><input id="city" name="city" required placeholder="e.g. Bikaner"></div>
+        <div class="enquiry-field full"><label for="address">Shop Address</label><input id="address" name="address" autocomplete="street-address" placeholder="Medical shop address"></div>
+        <div class="enquiry-field full"><label for="requirement">Products / Requirement *</label><textarea id="requirement" name="requirement" required placeholder="Write product names, quantity or your enquiry"></textarea></div>
+      </div>
+      <button type="submit" class="wa-submit">💬 Share Enquiry on WhatsApp</button>
+      <p class="form-note">No customer login or password needed. WhatsApp opens with your message ready to send.</p>
+    </form>
+  </div>
+</section>
 
 <section class="services">
-
-    <div class="section-title">
-
-        <p>OUR SERVICES</p>
-
-        <h2>Simple & Fast Customer Support</h2>
-
-    </div>
-
-
-    <div class="service-grid">
-
-
-        <div class="service-card">
-
-            <div class="icon">📦</div>
-
-            <h3>Product Catalog</h3>
-
-            <p>
-                Browse our available medical products
-                and send an enquiry.
-            </p>
-
-            <a href="products.html">
-                View Products →
-            </a>
-
-        </div>
-
-
-        <div class="service-card">
-
-            <div class="icon">💬</div>
-
-            <h3>Product Enquiry</h3>
-
-            <p>
-                Ask about products and quantities
-                directly through WhatsApp.
-            </p>
-
-            <a href="contact.html">
-                Enquire Now →
-            </a>
-
-        </div>
-
-
-        <div class="service-card">
-
-            <div class="icon">⚠️</div>
-
-            <h3>Complaint</h3>
-
-            <p>
-                Submit a complaint if you face
-                any issue with your order.
-            </p>
-
-            <a href="complaint.html">
-                Submit Complaint →
-            </a>
-
-        </div>
-
-
-        <div class="service-card">
-
-            <div class="icon">🔍</div>
-
-            <h3>Track Complaint</h3>
-
-            <p>
-                Check the status of your submitted
-                complaint online.
-            </p>
-
-            <a href="track-complaint.html">
-                Track Complaint →
-            </a>
-
-        </div>
-
-
-        <!-- TRACK ORDER -->
-
-        <div class="service-card">
-
-            <div class="icon">📦</div>
-
-            <h3>Track Order</h3>
-
-            <p>
-                Check your order status online
-                using your Order ID.
-            </p>
-
-            <a href="track-order.html">
-                Track Order →
-            </a>
-
-        </div>
-
-
-        <div class="service-card">
-
-            <div class="icon">⭐</div>
-
-            <h3>Customer Feedback</h3>
-
-            <p>
-                Share your experience and feedback
-                with our team.
-            </p>
-
-            <a href="feedback.html">
-                Give Feedback →
-            </a>
-
-        </div>
-
-
-    </div>
-
+  <div class="section-title"><p>OUR SERVICES</p><h2>Simple & Fast Customer Support</h2></div>
+  <div class="service-grid">
+    <div class="service-card"><div class="icon">📦</div><h3>Product Catalog</h3><p>Browse available medical products and send an enquiry.</p><a href="products.html">View Products →</a></div>
+    <div class="service-card"><div class="icon">💬</div><h3>Product Enquiry</h3><p>Tell us the products and quantities you need.</p><a href="#quick-enquiry">Enquire Now →</a></div>
+    <div class="service-card"><div class="icon">⚠️</div><h3>Complaint</h3><p>Submit a complaint if you face an issue with your order.</p><a href="complaint.html">Submit Complaint →</a></div>
+    <div class="service-card"><div class="icon">🔍</div><h3>Track Complaint</h3><p>Check the status of a submitted complaint online.</p><a href="track-complaint.html">Track Complaint →</a></div>
+    <div class="service-card"><div class="icon">📦</div><h3>Track Order</h3><p>Check your order status using your Order ID.</p><a href="track-order.html">Track Order →</a></div>
+    <div class="service-card"><div class="icon">⭐</div><h3>Customer Feedback</h3><p>Share your experience and feedback with our team.</p><a href="feedback.html">Give Feedback →</a></div>
+  </div>
 </section>
-
 
 <section class="cta">
-
-    <div>
-
-        <h2>Need a Product?</h2>
-
-        <p>
-            Send us your requirement and our team
-            will contact you.
-        </p>
-
-    </div>
-
-    <div class="hero-buttons">
-
-        <a href="track-order.html" class="btn">
-            📦 Track Order
-        </a>
-
-        <a href="https://wa.me/918000540156"
-           class="btn whatsapp"
-           target="_blank">
-            WhatsApp Us
-        </a>
-
-    </div>
-
+  <div><h2>Need a Product?</h2><p>Share your requirement directly with our team on WhatsApp.</p></div>
+  <div class="hero-buttons"><a href="track-order.html" class="btn">📦 Track Order</a><a href="#quick-enquiry" class="btn">Send Enquiry</a><a href="https://wa.me/918000540156" class="btn whatsapp" target="_blank" rel="noopener">WhatsApp Us</a></div>
 </section>
 
-
 <footer>
-
-    <div class="footer-content">
-
-        <div>
-
-            <h3>
-                Choudhary Medical and Drug Distributors
-            </h3>
-
-            <p>
-                Pugal Phanta Bus Stand ke Samne
-            </p>
-
-        </div>
-
-
-        <div>
-
-            <h4>Contact</h4>
-
-            <p>9828881312</p>
-            <p>8000540156</p>
-            <p>9352642174</p>
-
-            <p>
-                choudharydistributors2024@gmail.com
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="copyright">
-
-        © 2026 Choudhary Medical and Drug Distributors.
-        All Rights Reserved.
-
-    </div>
-
+  <div class="footer-content">
+    <div><h3>Choudhary Medical and Drug Distributors</h3><p>Pugal Phanta Bus Stand ke Samne, Bikaner</p></div>
+    <div><h4>Contact</h4><p>9828881312</p><p>8000540156</p><p>9352642174</p><p>choudharydistributors2024@gmail.com</p></div>
+  </div>
+  <div class="copyright">© 2026 Choudhary Medical and Drug Distributors. All Rights Reserved.</div>
 </footer>
 
-
 <script src="script.js"></script>
-
-
 <script>
-(()=>{const k='cmadd-visitor-key';let v=localStorage.getItem(k);const returning=!!v;if(!v){v=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();localStorage.setItem(k,v)}const track=(eventType,detail='')=>fetch('/api/activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitorKey:v,eventType,page:location.pathname,detail})}).catch(()=>{});track('page_view');if(returning)track('repeat_visit');document.querySelectorAll('a[href*="wa.me"]').forEach(a=>a.addEventListener('click',()=>track('whatsapp_click',a.href)));document.querySelectorAll('a[href="products.html"]').forEach(a=>a.addEventListener('click',()=>track('product_view','product catalog')));document.querySelectorAll('a[href="customer-portal.html"]').forEach(a=>a.addEventListener('click',()=>track('enquiry_click','customer portal')));})();
+document.getElementById('medicalEnquiryForm').addEventListener('submit',function(event){
+  event.preventDefault();
+  if(!this.reportValidity()) return;
+  const data=new FormData(this);
+  const message=[
+    '🩺 *NEW MEDICAL SHOP ENQUIRY*',
+    '',
+    '*Business:* Choudhary Medical and Drug Distributors',
+    '*Customer Name:* '+data.get('customerName').trim(),
+    '*Medical / Shop Name:* '+data.get('medicalName').trim(),
+    '*Mobile:* '+data.get('mobile').trim(),
+    '*City / Area:* '+data.get('city').trim(),
+    '*Shop Address:* '+(data.get('address').trim()||'Not provided'),
+    '*Products / Requirement:* '+data.get('requirement').trim(),
+    '',
+    'Sent from CMADD website.'
+  ].join('\n');
+  window.open('https://wa.me/918000540156?text='+encodeURIComponent(message),'_blank','noopener');
+});
 </script>
-
+<script>
+(()=>{try{const k='cmadd-visitor-key';let v=localStorage.getItem(k);const returning=!!v;if(!v){v=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();localStorage.setItem(k,v)}const track=(eventType,detail='')=>fetch('/api/activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitorKey:v,eventType,page:location.pathname,detail})}).catch(()=>{});track('page_view');if(returning)track('repeat_visit');document.querySelectorAll('a[href*="wa.me"]').forEach(a=>a.addEventListener('click',()=>track('whatsapp_click',a.href)));document.querySelectorAll('a[href="products.html"]').forEach(a=>a.addEventListener('click',()=>track('product_view','product catalog')))}catch(e){} })();
+</script>
 </body>
 </html>
