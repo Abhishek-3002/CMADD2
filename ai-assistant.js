@@ -4,24 +4,24 @@
 
   const css = document.createElement("link");
   css.rel = "stylesheet";
-  css.href = "/ai-assistant.css";
+  css.href = "/ai-assistant.css?v=2";
   document.head.appendChild(css);
 
   const root = document.createElement("div");
   root.id = "cmadd-ai-root";
   root.innerHTML = `
-    <button class="cm-ai-fab" type="button" aria-label="Open CMADD2 AI Assistant" aria-expanded="false">
-      <span class="cm-ai-fab-orb" aria-hidden="true">✦</span><span class="cm-ai-fab-label">AI Assistant</span>
+    <button class="cm-ai-fab" type="button" aria-label="Open MAYA AI Assistant" aria-expanded="false">
+      <span class="cm-ai-fab-orb" aria-hidden="true">✦</span><span class="cm-ai-fab-label">MAYA AI</span>
     </button>
-    <section class="cm-ai-panel" role="dialog" aria-modal="false" aria-label="CMADD2 AI Customer Assistant" hidden>
+    <section class="cm-ai-panel" role="dialog" aria-modal="false" aria-label="MAYA AI Customer Assistant" hidden>
       <header class="cm-ai-head">
         <div class="cm-ai-avatar" aria-hidden="true">✦</div>
-        <div class="cm-ai-heading"><strong>CMADD2 Assistant</strong><span><i></i> Customer support</span></div>
+        <div class="cm-ai-heading"><strong>MAYA</strong><span><i></i> Powered by FIXBYTE · CMADD2 Support</span></div>
         <button class="cm-ai-icon-btn cm-ai-close" type="button" aria-label="Close assistant">×</button>
       </header>
       <div class="cm-ai-trust">AI-generated help · Please verify business-critical details</div>
       <div class="cm-ai-messages" aria-live="polite" aria-relevant="additions">
-        <div class="cm-ai-msg cm-ai-bot">Namaste! 👋 Main CMADD2 Assistant hoon. Aapko product enquiry, order tracking, complaint ya general help mein kya dikkat aa rahi hai?</div>
+        <div class="cm-ai-msg cm-ai-bot">Namaste! 👋 Main MAYA hoon — Choudhary Medical and Drug Distributors ki AI assistant. Product enquiry, order tracking, complaint ya website help ke liye batayein, main kaise madad kar sakti hoon?</div>
       </div>
       <div class="cm-ai-quick">
         <button type="button" data-prompt="Mujhe product ki enquiry karni hai.">Product enquiry</button>
