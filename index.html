@@ -28,6 +28,28 @@
 @keyframes cardEnter{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:600px){.enquiry-grid{grid-template-columns:1fr}.enquiry-field.full{grid-column:auto}.quick-enquiry{padding:38px 13px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* CMADD2 premium call selector + enquiry ID */
+.call-cta{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 22px;border-radius:13px;text-decoration:none;font-weight:800;color:#fff;background:linear-gradient(135deg,#102d4f,#0866ff);border:1px solid #ffffff80;box-shadow:0 10px 28px #0866ff30;cursor:pointer}
+.call-cta:hover{transform:translateY(-2px);box-shadow:0 15px 35px #0866ff42}
+.enquiry-id-result{display:none;margin-top:18px;padding:16px;border-radius:14px;border:1px solid #91d7b1;background:linear-gradient(135deg,#effff6,#f3f8ff);color:#174c35;overflow-wrap:anywhere}
+.enquiry-id-result strong{display:block;font-size:clamp(18px,4vw,24px);letter-spacing:.04em;margin:5px 0}
+.call-modal{display:none;position:fixed;inset:0;z-index:99999;background:rgba(2,10,25,.68);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);align-items:center;justify-content:center;padding:18px}
+.call-modal.open{display:flex;animation:callFadeIn .22s ease both}
+.call-panel{width:min(100%,430px);border:1px solid #ffffff80;border-radius:25px;padding:25px;background:linear-gradient(145deg,#fff,#f1f7ff);box-shadow:0 25px 90px #0005;position:relative}
+.call-panel h2{font-size:clamp(24px,6vw,32px);color:#102b49;margin:4px 0 7px}
+.call-panel p{color:#607287;margin-bottom:20px}
+.call-choice{display:flex;align-items:center;gap:13px;width:100%;padding:15px;margin:10px 0;border:1px solid #d8e5f5;border-radius:16px;background:#fff;color:#102b49;text-decoration:none;box-shadow:0 8px 20px #0b4d8a0d;transition:transform .2s,border .2s}
+.call-choice:hover{transform:translateY(-2px);border-color:#0866ff}
+.call-avatar{width:44px;height:44px;flex:0 0 44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#0866ff,#46c6ff);color:white;font-weight:900}
+.call-choice b{display:block;font-size:16px}.call-choice small{display:block;color:#64748b;margin-top:2px}
+.call-choice .call-arrow{margin-left:auto;color:#0866ff;font-size:22px}
+.call-close{position:absolute;right:14px;top:14px;width:38px;height:38px;border:1px solid #dce7f4;border-radius:50%;background:#fff;color:#16304b;font-size:22px;cursor:pointer}
+.floating-call{position:fixed;right:16px;bottom:16px;z-index:1000;border:0;border-radius:999px;padding:14px 19px;background:linear-gradient(135deg,#0866ff,#0047cc);color:#fff;font-weight:800;box-shadow:0 10px 28px #0866ff55;cursor:pointer}
+@keyframes callFadeIn{from{opacity:0}to{opacity:1}}
+@media(max-width:600px){.call-cta{width:100%}.floating-call{right:12px;bottom:12px;padding:13px 16px}.call-panel{padding:23px 18px}.hero-buttons .btn{max-width:100%}}
+@media(prefers-reduced-motion:reduce){.call-modal.open{animation:none}.call-choice,.call-cta{transition:none}}
+
 </style>
 </head>
 <body>
@@ -53,6 +75,7 @@
       <a href="interactive-hero.html" class="btn">✨ Interactive 3D Hero</a>
       <a href="#quick-enquiry" class="btn">Quick Enquiry ↓</a>
       <a href="meeting.html" class="btn">📅 Book Meeting</a>
+      <button type="button" class="call-cta" data-open-call>📞 Call Now</button>
       <a href="https://wa.me/918000540156" class="btn whatsapp" target="_blank" rel="noopener">WhatsApp Enquiry</a>
     </div>
   </div>
@@ -78,7 +101,8 @@
         <div class="enquiry-field full"><label for="requirement">Products / Requirement *</label><textarea id="requirement" name="requirement" required placeholder="Write product names, quantity or your enquiry"></textarea></div>
       </div>
       <button type="submit" class="wa-submit">💬 Share Enquiry on WhatsApp</button>
-      <p class="form-note">No customer login or password needed. WhatsApp opens with your message ready to send.</p>
+      <div class="enquiry-id-result" id="enquiryIdResult" role="status" aria-live="polite"><span>✅ Your enquiry ID is ready</span><strong id="generatedEnquiryId"></strong><span>WhatsApp is opening with this ID included in your message.</span></div>
+      <p class="form-note">No customer login or password needed. Your unique enquiry ID is created before WhatsApp opens.</p>
     </form>
   </div>
 </section>
@@ -109,27 +133,61 @@
   <div class="copyright">© 2026 Choudhary Medical and Drug Distributors. All Rights Reserved.</div>
 </footer>
 
+
+<div class="call-modal" id="callModal" role="dialog" aria-modal="true" aria-labelledby="callModalTitle">
+  <div class="call-panel">
+    <button type="button" class="call-close" id="closeCallModal" aria-label="Close call options">×</button>
+    <span class="enquiry-tag">TALK TO OUR TEAM</span>
+    <h2 id="callModalTitle">Who would you like to call?</h2>
+    <p>Choose a contact and your phone will open the call screen.</p>
+    <a class="call-choice" href="tel:8000540156"><span class="call-avatar">A</span><span><b>Abhishek</b><small>8000540156</small></span><span class="call-arrow">↗</span></a>
+    <a class="call-choice" href="tel:9352642174"><span class="call-avatar">V</span><span><b>Vishal</b><small>93526 42174</small></span><span class="call-arrow">↗</span></a>
+  </div>
+</div>
+<button type="button" class="floating-call" data-open-call aria-label="Choose a contact to call">☎ Call Us</button>
+
 <script src="script.js"></script>
 <script>
 document.getElementById('medicalEnquiryForm').addEventListener('submit',function(event){
   event.preventDefault();
   if(!this.reportValidity()) return;
   const data=new FormData(this);
+  const now=new Date();
+  const datePart=now.getFullYear().toString()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0');
+  const randomPart=Array.from(crypto.getRandomValues(new Uint8Array(4)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase().slice(0,6);
+  const enquiryId='CMD-'+datePart+'-'+randomPart;
+  const result=document.getElementById('enquiryIdResult');
+  document.getElementById('generatedEnquiryId').textContent=enquiryId;
+  result.style.display='block';
+  result.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
   const message=[
-    '🩺 *NEW MEDICAL SHOP ENQUIRY*',
-    '',
+    '🩺 *NEW MEDICAL SHOP ENQUIRY*','',
+    '*Enquiry ID:* '+enquiryId,
     '*Business:* Choudhary Medical and Drug Distributors',
-    '*Customer Name:* '+data.get('customerName').trim(),
-    '*Medical / Shop Name:* '+data.get('medicalName').trim(),
-    '*Mobile:* '+data.get('mobile').trim(),
-    '*City / Area:* '+data.get('city').trim(),
-    '*Shop Address:* '+(data.get('address').trim()||'Not provided'),
-    '*Products / Requirement:* '+data.get('requirement').trim(),
+    '*Customer Name:* '+String(data.get('customerName')).trim(),
+    '*Medical / Shop Name:* '+String(data.get('medicalName')).trim(),
+    '*Mobile:* '+String(data.get('mobile')).trim(),
+    '*City / Area:* '+String(data.get('city')).trim(),
+    '*Shop Address:* '+(String(data.get('address')||'').trim()||'Not provided'),
+    '*Products / Requirement:* '+String(data.get('requirement')).trim(),
     '',
-    'Sent from CMADD website.'
+    'Please refer to this Enquiry ID for follow-up.',
+    'Sent from CMADD2 website.'
   ].join('\n');
-  window.open('https://wa.me/918000540156?text='+encodeURIComponent(message),'_blank','noopener');
+  const whatsappUrl='https://wa.me/918000540156?text='+encodeURIComponent(message);
+  window.open(whatsappUrl,'_blank','noopener,noreferrer');
 });
+(function(){
+  const modal=document.getElementById('callModal');
+  const openers=document.querySelectorAll('[data-open-call]');
+  const closer=document.getElementById('closeCallModal');
+  function openCall(){modal.classList.add('open');document.body.style.overflow='hidden';closer.focus()}
+  function closeCall(){modal.classList.remove('open');document.body.style.overflow=''}
+  openers.forEach(button=>button.addEventListener('click',openCall));
+  closer.addEventListener('click',closeCall);
+  modal.addEventListener('click',event=>{if(event.target===modal)closeCall()});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&modal.classList.contains('open'))closeCall()});
+})();
 </script>
 <script>
 (()=>{try{const k='cmadd-visitor-key';let v=localStorage.getItem(k);const returning=!!v;if(!v){v=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();localStorage.setItem(k,v)}const track=(eventType,detail='')=>fetch('/api/activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitorKey:v,eventType,page:location.pathname,detail})}).catch(()=>{});track('page_view');if(returning)track('repeat_visit');document.querySelectorAll('a[href*="wa.me"]').forEach(a=>a.addEventListener('click',()=>track('whatsapp_click',a.href)));document.querySelectorAll('a[href="products.html"]').forEach(a=>a.addEventListener('click',()=>track('product_view','product catalog')))}catch(e){} })();
