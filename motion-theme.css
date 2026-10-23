@@ -33,7 +33,6 @@ nav a:hover,.hero-card a:hover,.service-card a:hover{color:var(--cmadd-accent)!i
  box-shadow:inset 0 1px 0 rgba(255,255,255,.65),0 14px 34px rgba(8,102,255,.34)!important;
  border-color:rgba(255,255,255,.78)!important
 }
-.btn:hover,.hero-buttons .btn:hover,button:hover,.wa-submit:hover,input[type=submit]:hover,button.primary:hover{background:var(--cmadd-accent-dark)!important;box-shadow:0 12px 28px rgba(8,102,255,.32)!important}
 .hero-card,.service-card,.card,.product,.campaign,.item,form,.feature-card,.stat-card,.panel,.box-card{transition:transform .32s cubic-bezier(.2,.75,.25,1),box-shadow .32s ease,border-color .32s ease;transform-style:preserve-3d;backface-visibility:hidden}
 .hero-card,.service-card,.card,.product,.campaign,.item,.feature-card,.stat-card,.panel,.box-card{animation:cmadd-fade-up .9s cubic-bezier(.2,.75,.25,1) both}
 .hero-card{border:1px solid var(--cmadd-border);box-shadow:var(--cmadd-shadow)!important}
