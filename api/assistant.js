@@ -61,7 +61,7 @@ module.exports = async function handler(req, res) {
   if (asksCreator) return send(res, 200, { answer: "Mujhe FIXBYTE ne develop kiya hai. 😊" });
   if (asksFounder) return send(res, 200, { answer: "FIXBYTE ke founder aur owner Abhishek Bangadwa hain." });
 
-  const relevantTopic = /cmadd2|cmadd|choudhary|medical|medicine|medicin|drug|dawai|dava|dawa|product|stock|price|rate|cost|order|track|tracking|complaint|feedback|enquir|inquir|meeting|shop|distribut|wholesale|delivery|deliver|invoice|ledger|account|website|site|contact|whatsapp|call|business|customer|maya|fixbyte|founder|owner|malik|problem|issue|help|support|madad|samasya|shikayat|jankari|jaankari|kaise|kahan|kab|kya|namaste|hello|hi\\b|hii\\b|hey\\b|thanks|thank you|dhanyavaad|shukriya/i.test(message);
+  const relevantTopic = /cmadd2|cmadd|choudhary|medical|medicine|medicin|drug|dawai|dava|dawa|product|stock|price|rate|cost|order|track|tracking|complaint|feedback|enquir|inquir|meeting|shop|distribut|wholesale|delivery|deliver|invoice|ledger|account|payment|bill|registration|register|login|website|site|contact|whatsapp|call|business|customer|maya|fixbyte|founder|owner|malik|problem|issue|help|support|madad|samasya|shikayat|jankari|jaankari|what can you do|how can you help|tum kya kar sakti|aap kya kar sakte|namaste|hello|hi\\b|hii\\b|hey\\b|thanks|thank you|dhanyavaad|shukriya/i.test(message);
   if (!relevantTopic) {
     return send(res, 200, { answer: "Iske baare mein mujhe jaankari nahi hai. 😊 Main CMADD2, Choudhary Medical and Drug Distributors, hamare products aur website se judi madad kar sakti hoon. Aap hamari team se WhatsApp par sampark kar sakte hain: +91 8000540156." });
   }
