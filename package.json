@@ -1,19 +1,13 @@
 {
-  "name": "cmadd2",
-  "version": "1.0.0",
-  "description": "",
-  "main": "script.js",
+  "name": "cmadd2-static",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Static-style CMADD customer website served with Node built-ins only",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "better-sqlite3": "^13.0.3",
-    "express": "^5.2.1",
-    "express-session": "^1.19.0"
+  "engines": {
+    "node": ">=18"
   }
 }
