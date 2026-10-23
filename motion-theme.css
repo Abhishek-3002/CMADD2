@@ -1,0 +1,36 @@
+/* CMADD2 animated premium white theme — clean, responsive, subtle 3D motion */
+:root{
+ --cmadd-accent:#c62828;--cmadd-accent-dark:#a71919;--cmadd-ink:#20242b;
+ --cmadd-muted:#667085;--cmadd-border:#e7e9ee;--cmadd-surface:#ffffff;
+ --cmadd-soft:#f7f8fa;--cmadd-shadow:0 12px 34px rgba(25,32,45,.075);
+ --cmadd-shadow-hover:0 22px 48px rgba(25,32,45,.13);
+}
+html{scroll-behavior:smooth}
+body{background:#fff!important;color:var(--cmadd-ink)!important}
+a{transition:color .22s ease,background-color .22s ease,box-shadow .22s ease,transform .22s ease}
+button,.btn,input[type=submit]{transition:transform .22s ease,box-shadow .22s ease,background-color .22s ease,border-color .22s ease}
+button:hover,.btn:hover,input[type=submit]:hover{transform:translateY(-2px);box-shadow:0 9px 20px rgba(198,40,40,.16)}
+button:active,.btn:active,input[type=submit]:active{transform:translateY(0) scale(.985)}
+.header,header,.navbar{background:rgba(255,255,255,.94)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(231,233,238,.9);box-shadow:0 5px 24px rgba(25,32,45,.045)!important}
+.logo,.small-title,.section-title p{color:var(--cmadd-accent)!important}
+nav a:hover,.hero-card a:hover,.service-card a:hover{color:var(--cmadd-accent)!important}
+.hero{background:linear-gradient(125deg,#fff 0%,#fafafa 62%,#fff5f5 100%)!important;position:relative;isolation:isolate;overflow:hidden}
+.hero:after{content:"";position:absolute;z-index:-1;width:300px;height:300px;right:5%;top:8%;border-radius:50%;background:radial-gradient(circle,rgba(198,40,40,.075),rgba(198,40,40,0) 70%);animation:cmadd-orbit-glow 7s ease-in-out infinite alternate;pointer-events:none}
+.hero h1,.section-title h2,.hero-card h2,.service-card h3{color:var(--cmadd-ink)!important}
+.btn,.hero-buttons .btn,button.primary{background:var(--cmadd-accent)!important;color:#fff!important;border:1px solid var(--cmadd-accent)!important;box-shadow:0 5px 14px rgba(198,40,40,.12)}
+.btn:hover,.hero-buttons .btn:hover,button.primary:hover{background:var(--cmadd-accent-dark)!important}
+.hero-card,.service-card,.card,.product,.campaign,.item,form,.feature-card,.stat-card,.panel,.box-card{transition:transform .32s cubic-bezier(.2,.75,.25,1),box-shadow .32s ease,border-color .32s ease;transform-style:preserve-3d;backface-visibility:hidden}
+.hero-card,.service-card,.card,.product,.campaign,.item,.feature-card,.stat-card,.panel,.box-card{animation:cmadd-fade-up .7s cubic-bezier(.2,.75,.25,1) both}
+.hero-card{border:1px solid var(--cmadd-border);box-shadow:var(--cmadd-shadow)!important}
+.service-card,.card,.product,.campaign,.item,.feature-card,.stat-card,.panel,.box-card{background:#fff!important;border-color:var(--cmadd-border)!important;box-shadow:0 6px 22px rgba(25,32,45,.045)}
+@media (hover:hover) and (pointer:fine){
+ .hero-card:hover,.service-card:hover,.card:hover,.product:hover,.campaign:hover,.feature-card:hover,.stat-card:hover,.panel:hover,.box-card:hover{transform:perspective(900px) translateY(-5px) rotateX(.6deg);box-shadow:var(--cmadd-shadow-hover)!important;border-color:#e8c7c7!important}
+}
+input,select,textarea{transition:border-color .2s ease,box-shadow .2s ease,background-color .2s ease}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--cmadd-accent)!important;box-shadow:0 0 0 3px rgba(198,40,40,.10)!important}
+footer{background:#20242b!important}
+::selection{background:rgba(198,40,40,.16);color:#20242b}
+@keyframes cmadd-fade-up{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cmadd-orbit-glow{from{transform:translate3d(0,0,0) scale(.92)}to{transform:translate3d(-18px,14px,0) scale(1.08)}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;transform:none!important}}
+@media(max-width:600px){.hero:after{width:180px;height:180px;right:-45px}.hero{background:linear-gradient(150deg,#fff,#fff7f7)!important}.hero-card,.service-card,.card,.product{border-radius:14px}}
