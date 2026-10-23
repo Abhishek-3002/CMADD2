@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#123b5d">
+<title>Create an Order | Choudhary Medical and Drug Distributors</title>
+<link rel="stylesheet" href="motion-theme.css?v=5">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:#173047;background:radial-gradient(circle at top right,#dff4ff,transparent 35%),linear-gradient(135deg,#f7fbff,#eef8f4);min-height:100vh}.top{padding:17px 5%;display:flex;justify-content:space-between;align-items:center;gap:16px;background:#ffffffd9;backdrop-filter:blur(14px);border-bottom:1px solid #dceaf1;position:sticky;top:0;z-index:5}.brand{font-weight:800;color:#123b5d;line-height:1.35}.brand span{color:#168b78}.top a,.btn{color:#fff;background:linear-gradient(135deg,#123b5d,#087f8c);padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:800;border:0;cursor:pointer}.wrap{width:min(850px,92%);margin:38px auto}.card{background:#ffffffed;border:1px solid #dceaf1;border-radius:26px;padding:clamp(22px,5vw,42px);box-shadow:0 24px 70px #123b5d18;animation:up .55s ease both}.tag{font-size:12px;letter-spacing:2px;font-weight:800;color:#168b78}.card h1{font-size:clamp(30px,5vw,44px);margin:10px 0;color:#123b5d}.card p{line-height:1.65;color:#607487}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:24px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:800;color:#23465c}.field input,.field textarea,.field select{font:inherit;padding:14px;border:1px solid #d5e2e9;border-radius:12px;background:#fbfdff;width:100%;outline:none;transition:.2s}.field input:focus,.field textarea:focus,.field select:focus{border-color:#087f8c;box-shadow:0 0 0 4px #087f8c18}.field textarea{min-height:130px;resize:vertical}.btn{width:100%;padding:16px;margin-top:22px;font-size:16px;box-shadow:0 10px 25px #087f8c25}.result{display:none;margin-top:20px;padding:18px;border-radius:16px;border:1px solid #9bd7bf;background:linear-gradient(135deg,#effff7,#f2fbff);overflow-wrap:anywhere}.result strong{display:block;font-size:clamp(20px,4vw,28px);margin:7px 0;color:#126044;letter-spacing:.04em}.note{text-align:center;font-size:12px!important;margin-top:13px}.result a{display:inline-block;margin-top:10px;color:#075e54;font-weight:800}.footnote{font-size:12px;color:#6a7d8c;text-align:center;margin:20px 0}@keyframes up{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}@media(max-width:580px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.top{padding:14px 4%}.wrap{margin:22px auto}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">Choudhary Medical<br><span>and Drug Distributors</span></div><a href="index.html">← Home</a></header>
+<main class="wrap"><section class="card">
+<span class="tag">QUICK • SIMPLE • WHATSAPP</span>
+<h1>📦 Create an Order</h1>
+<p>Apni medical shop details aur order ki list likhein. Aapko ek Order Tracking ID milegi aur order details WhatsApp par share karne ke liye khul jayengi.</p>
+<form id="orderForm">
+<div class="grid">
+<div class="field"><label for="customerName">Customer Name *</label><input id="customerName" name="customerName" required autocomplete="name" placeholder="Your full name"></div>
+<div class="field"><label for="medicalName">Medical / Shop Name *</label><input id="medicalName" name="medicalName" required placeholder="Medical shop name"></div>
+<div class="field"><label for="mobile">Mobile Number *</label><input id="mobile" name="mobile" type="tel" inputmode="tel" pattern="[0-9+() -]{10,16}" required autocomplete="tel" placeholder="Contact number"></div>
+<div class="field"><label for="city">City / Area *</label><input id="city" name="city" required placeholder="e.g. Bikaner"></div>
+<div class="field full"><label for="address">Shop Address</label><input id="address" name="address" autocomplete="street-address" placeholder="Full shop address (optional)"></div>
+<div class="field full"><label for="orderDetails">Order Details * </label><textarea id="orderDetails" name="orderDetails" required placeholder="Write product names, strengths, pack size and quantity. Example: Product name — 10 boxes"></textarea></div>
+<div class="field full"><label for="notes">Additional Note</label><input id="notes" name="notes" placeholder="Any special instructions (optional)"></div>
+</div>
+<button class="btn" type="submit">✅ Generate Tracking ID & Share on WhatsApp</button>
+<div class="result" id="orderResult" role="status" aria-live="polite"><span>Order reference created</span><strong id="trackingId"></strong><span>Keep this ID for follow-up. WhatsApp will open with the order details included.</span><br><a id="trackLink" href="track-order.html">Open order tracking request →</a></div>
+<p class="note">WhatsApp message will be prepared for you. Please press Send in WhatsApp to submit the order.</p>
+</form>
+</section><p class="footnote">Choudhary Medical and Drug Distributors • Pugal Phanta, Bikaner</p></main>
+<script>
+document.getElementById('orderForm').addEventListener('submit',function(e){
+ e.preventDefault();if(!this.reportValidity())return;
+ const d=new FormData(this);const now=new Date();
+ const date=now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0');
+ const bytes=new Uint8Array(4);crypto.getRandomValues(bytes);
+ const suffix=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('').toUpperCase().slice(0,6);
+ const id='CMD-ORD-'+date+'-'+suffix;
+ document.getElementById('trackingId').textContent=id;
+ document.getElementById('orderResult').style.display='block';
+ document.getElementById('trackLink').href='track-order.html?trackingId='+encodeURIComponent(id);
+ document.getElementById('orderResult').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
+ const msg=[
+ '📦 *NEW ORDER REQUEST*','',
+ '*Order Tracking ID:* '+id,
+ '*Business:* Choudhary Medical and Drug Distributors',
+ '*Customer Name:* '+String(d.get('customerName')).trim(),
+ '*Medical / Shop Name:* '+String(d.get('medicalName')).trim(),
+ '*Mobile:* '+String(d.get('mobile')).trim(),
+ '*City / Area:* '+String(d.get('city')).trim(),
+ '*Shop Address:* '+(String(d.get('address')||'').trim()||'Not provided'),
+ '*Order Details:*\n'+String(d.get('orderDetails')).trim(),
+ '*Additional Note:* '+(String(d.get('notes')||'').trim()||'None'),
+ '',
+ 'Please confirm availability and order status for this Tracking ID.',
+ 'Sent from CMADD2 Create an Order page.'
+ ].join('\n');
+ window.open('https://wa.me/918000540156?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
+});
+const id=new URLSearchParams(location.search).get('trackingId');if(id){document.getElementById('trackingId').textContent=id;document.getElementById('orderResult').style.display='block';}
+</script>
+<script src="/ai-assistant.js?v=3" defer></script>
+</body></html>
