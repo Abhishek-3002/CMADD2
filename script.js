@@ -2,6 +2,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("Choudhary Medical website loaded successfully.");
 
+    // Call selector available on every page using this script.
+    if (!document.querySelector(".call-fab")) {
+        const callButton = document.createElement("button");
+        callButton.className = "call-fab";
+        callButton.type = "button";
+        callButton.textContent = "☎ Call Us";
+        callButton.setAttribute("aria-label", "Choose a contact to call");
+        document.body.appendChild(callButton);
+
+        const overlay = document.createElement("div");
+        overlay.className = "call-overlay";
+        overlay.innerHTML = `
+          <section class="call-panel" role="dialog" aria-modal="true" aria-labelledby="callTitle">
+            <button type="button" class="call-close" aria-label="Close contact choices">×</button>
+            <h2 id="callTitle">Call our team</h2>
+            <p>Choose who you would like to speak with.</p>
+            <a class="call-choice" href="tel:8000540156"><span><strong>Abhishek</strong><small>8000540156</small></span><span class="call-now">Call ↗</span></a>
+            <a class="call-choice" href="tel:9352642174"><span><strong>Vishal</strong><small>93526 42174</small></span><span class="call-now">Call ↗</span></a>
+          </section>`;
+        document.body.appendChild(overlay);
+        const closeCall = () => overlay.classList.remove("open");
+        callButton.addEventListener("click", () => overlay.classList.add("open"));
+        overlay.querySelector(".call-close").addEventListener("click", closeCall);
+        overlay.addEventListener("click", event => { if (event.target === overlay) closeCall(); });
+        document.addEventListener("keydown", event => { if (event.key === "Escape") closeCall(); });
+    }
+
     // Mobile Menu
     const menuBtn = document.querySelector(".menu-btn");
     const nav = document.querySelector("nav");
