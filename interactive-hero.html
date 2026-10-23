@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#050914">
-<title>CMADD • AI Automation</title>
+<title>Choudhary Medical &amp; Drug Distributors | Bikaner</title>
 <link rel="preconnect" href="https://db.onlinewebfonts.com">
 <link href="https://db.onlinewebfonts.com/c/e66905e07608167a84e6ad52f638c3c6?family=Helvetica+Now+Var" rel="stylesheet">
 <style>
@@ -15,12 +15,12 @@ body{overflow-x:hidden}
 .video-shade{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(90deg,rgba(2,7,19,.76) 0%,rgba(2,7,19,.42) 54%,rgba(2,7,19,.16) 100%),linear-gradient(0deg,rgba(2,7,19,.4),transparent 55%)}
 .hero{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;height:100vh;min-height:540px;padding:70px 32px 32px;isolation:isolate;overflow:hidden;background:transparent}
 .hero-inner{position:relative;display:flex;flex-direction:column;align-items:flex-start;max-width:720px;will-change:transform;transition:transform .18s ease-out}
-.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:22px;color:rgba(255,255,255,.78);font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;opacity:0;animation:fadeUp .8s .06s cubic-bezier(.22,1,.36,1) forwards}
+.eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:22px;color:rgba(255,255,255,.82);font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;opacity:0;animation:fadeUp .8s .06s cubic-bezier(.22,1,.36,1) forwards}
 .eyebrow:before{content:'';width:26px;height:1px;background:#70c7ff;box-shadow:0 0 14px #168bff}
 h2{display:flex;flex-wrap:wrap;gap:.25em;margin:0;color:#fff;font-size:clamp(26px,3vw,42px);font-weight:700;line-height:1.08;letter-spacing:-.01em;text-transform:uppercase;text-shadow:0 3px 32px rgba(0,0,0,.2)}
 .word{display:inline-block;opacity:0;transform:translateY(32px);animation:wordIn .7s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--delay)}
-.subtext{margin:24px 0 0;max-width:260px;font-size:14px;line-height:1.65;color:rgba(255,255,255,.85);opacity:0;transform:translateY(24px);animation:fadeUp .7s .9s cubic-bezier(.22,1,.36,1) forwards}
-.hero-meta{display:flex;align-items:center;gap:9px;margin-top:26px;color:rgba(255,255,255,.72);font-size:10px;font-weight:700;letter-spacing:.17em;text-transform:uppercase;opacity:0;animation:fadeUp .7s 1.15s cubic-bezier(.22,1,.36,1) forwards}
+.subtext{margin:24px 0 0;max-width:340px;font-size:14px;line-height:1.65;color:rgba(255,255,255,.9);opacity:0;transform:translateY(24px);animation:fadeUp .7s .9s cubic-bezier(.22,1,.36,1) forwards}
+.hero-meta{display:flex;align-items:center;gap:9px;margin-top:26px;color:rgba(255,255,255,.78);font-size:10px;font-weight:700;letter-spacing:.17em;text-transform:uppercase;opacity:0;animation:fadeUp .7s 1.15s cubic-bezier(.22,1,.36,1) forwards}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#5ce6ff;box-shadow:0 0 12px #2196ff}
 .glass-orb{position:absolute;z-index:-1;left:35%;top:46%;width:min(42vw,440px);aspect-ratio:1;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(0,113,255,.14),rgba(35,147,255,.055) 42%,transparent 70%);filter:blur(10px);transform:translate(-50%,-50%);transition:transform .18s ease-out}
 .cursor-glow{position:fixed;z-index:10;left:0;top:0;width:230px;height:230px;border-radius:50%;pointer-events:none;opacity:0;background:radial-gradient(circle,rgba(30,139,255,.19) 0%,rgba(30,139,255,.09) 28%,rgba(30,139,255,.025) 52%,transparent 72%);transform:translate(-50%,-50%);transition:opacity .25s ease}
@@ -44,15 +44,15 @@ body.pointer-ready .cursor-glow,body.pointer-ready .cursor-ring{opacity:1}
 <section class="hero" id="hero">
 <div class="glass-orb" id="glassOrb" aria-hidden="true"></div>
 <div class="hero-inner" id="heroInner">
-<div class="eyebrow">Choudhary Medical &amp; Drug Distributors</div>
-<h2 id="headline" aria-label="We build end-to-end AI automation systems."></h2>
-<p class="subtext">We provide all-in-one AI automation services in one place.</p>
-<div class="hero-meta"><span class="status-dot"></span> Smarter systems. Simpler workflows.</div>
+<div class="eyebrow">Bikaner • Pugal Phanta</div>
+<h2 id="headline" aria-label="Choudhary Medical and Drug Distributors"></h2>
+<p class="subtext">Your trusted partner for medical supplies and wholesale distribution.</p>
+<div class="hero-meta"><span class="status-dot"></span> Trusted Medical Wholesale • Bikaner</div>
 </div>
 </section>
 <script>
 (()=> {
-const words='WE BUILD END-TO-END AI AUTOMATION SYSTEMS.'.split(' ');
+const words='CHOUDHARY MEDICAL & DRUG DISTRIBUTORS'.split(' ');
 const heading=document.getElementById('headline');
 words.forEach((word,index)=>{
  const span=document.createElement('span');
@@ -65,7 +65,7 @@ const inner=document.getElementById('heroInner');
 const orb=document.getElementById('glassOrb');
 const glow=document.getElementById('cursorGlow');
 const ring=document.getElementById('cursorRing');
-let tx=0,ty=0,sx=0,sy=0, gx=innerWidth/2,gy=innerHeight/2;
+let tx=0,ty=0,sx=0,sy=0,gx=innerWidth/2,gy=innerHeight/2;
 const finePointer=matchMedia('(hover:hover) and (pointer:fine)').matches;
 if(finePointer){
  document.body.classList.add('pointer-ready');
