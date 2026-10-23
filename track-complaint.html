@@ -12,4 +12,6 @@
 <script>
 document.getElementById('requestForm').addEventListener('submit',function(e){e.preventDefault();if(!this.reportValidity())return;const data=new FormData(this);const lines=['*CMADD - Complaint Status Request*',''];for(const [key,value] of data.entries()){const label=document.querySelector('[name="'+key+'"]').previousElementSibling.textContent.replace(' *','');lines.push('*'+label+':* '+String(value).trim())}lines.push('','Sent from CMADD website.');window.open('https://wa.me/918000540156?text='+encodeURIComponent(lines.join('\n')),'_blank','noopener');});
 </script><script src="script.js"></script>
+
+<script src="/ai-assistant.js" defer></script>
 </body></html>
