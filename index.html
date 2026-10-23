@@ -288,5 +288,10 @@
 
 <script src="script.js"></script>
 
+
+<script>
+(()=>{const k='cmadd-visitor-key';let v=localStorage.getItem(k);const returning=!!v;if(!v){v=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();localStorage.setItem(k,v)}const track=(eventType,detail='')=>fetch('/api/activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitorKey:v,eventType,page:location.pathname,detail})}).catch(()=>{});track('page_view');if(returning)track('repeat_visit');document.querySelectorAll('a[href*="wa.me"]').forEach(a=>a.addEventListener('click',()=>track('whatsapp_click',a.href)));document.querySelectorAll('a[href="products.html"]').forEach(a=>a.addEventListener('click',()=>track('product_view','product catalog')));document.querySelectorAll('a[href="customer-portal.html"]').forEach(a=>a.addEventListener('click',()=>track('enquiry_click','customer portal')));})();
+</script>
+
 </body>
 </html>
