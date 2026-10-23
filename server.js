@@ -4,14 +4,14 @@ const session = require("express-session");
 const Database = require("better-sqlite3");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // ===============================
 // DATABASE
 // ===============================
 
 const db = new Database(
-    path.join(__dirname, "complaints.db")
+    (process.env.DATABASE_PATH || path.join(__dirname, "complaints.db"))
 );
 
 // ===============================
