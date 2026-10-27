@@ -1752,18 +1752,24 @@ function renderCart(){
  });
 }
 function clearCart(){cart={};saveCart();updateCount();renderCart();}
+function makeEnquiryId(){return 'ENQ-'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'-'+Math.random().toString(36).slice(2,6).toUpperCase();}
 function sendWhatsApp(){
  const items=Object.entries(cart).filter(([n,q])=>Number(q)>0);
- if(!items.length){alert('Your cart is empty. Please add a product first.');return;}
- const lines=items.map(([name,q],i)=>`${i+1}. ${name} × ${q}`).join('\n');
- const msg='Hello Choudhary Medical and Drug Distributors,\n\nPlease check availability for these products:\n'+lines+'\n\nPlease confirm availability and pack details. Thank you.';
- window.open('https://wa.me/918000540156?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
+ if(!items.length){alert('Cart khaali hai. Pehle product add karein.');return;}
+ const enquiryId=makeEnquiryId();
+ const lines=items.map(([name,q],i)=>`${i+1}. ${name} × ${q}`).join('\\n');
+ const msg='📦 *CMADD2 PRODUCT ENQUIRY*\\n*Enquiry ID:* '+enquiryId+'\\n\\n*Shop/Business:* Choudhary Medical and Drug Distributors\\n*Products & Quantity:*\\n'+lines+'\\n\\nKripya availability, pack size aur applicable rate confirm karein.\\nThank you.';
+ const url='https://wa.me/918000540156?text='+encodeURIComponent(msg);
+ const win=window.open(url,'_blank','noopener,noreferrer');
+ if(!win) location.href=url;
+ try{localStorage.setItem('cmadd2-last-enquiry',JSON.stringify({id:enquiryId,items,created_at:new Date().toISOString()}));}catch(e){}
 }
+
 function createOrder(){
  const items=Object.entries(cart).filter(([n,q])=>Number(q)>0);
  if(!items.length){alert('Please add a product to your cart first.');return;}
  const details=items.map(([name,q])=>name+' — '+q+' unit(s)').join('\n');
- location.href='create-order.html?items='+encodeURIComponent(details);
+ location.href='create-order.html?items='+encodeURIComponent(details)+'&enquiryId='+encodeURIComponent(makeEnquiryId());
 }
 
 function searchProducts(){
