@@ -1698,7 +1698,17 @@ footer p{margin-top:7px;opacity:.85}
     
 </main>
 
-<button class="cart" onclick="sendWhatsApp()">🛒 Cart (<span id="count">0</span>)</button>
+<button class="cart" onclick="openCart()">🛒 Cart (<span id="count">0</span>) · View / Share</button>
+<div id="cartPanel" style="display:none;position:fixed;inset:0;background:#102a3b88;z-index:99;padding:18px;align-items:center;justify-content:center">
+ <section style="background:#fff;width:min(520px,100%);max-height:85vh;overflow:auto;border-radius:20px;padding:22px;box-shadow:0 20px 70px #0004">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 style="color:#123b5d">🛒 Your Enquiry Cart</h2><button onclick="closeCart()" aria-label="Close cart" style="border:0;background:#edf3f7;border-radius:10px;padding:9px 12px;cursor:pointer">✕</button></div>
+  <p style="color:#607487;margin:8px 0 14px">Check your products and quantities before sharing. No prices are shown.</p>
+  <div id="cartItems"></div>
+  <p id="cartEmpty" style="padding:18px;text-align:center;color:#607487">Your cart is empty. Add products to start an enquiry.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><button onclick="clearCart()" style="padding:13px;border:1px solid #d6e1e8;background:#fff;border-radius:10px;font-weight:700;cursor:pointer">Clear cart</button><button onclick="sendWhatsApp()" style="padding:13px;border:0;background:#087f8c;color:#fff;border-radius:10px;font-weight:800;cursor:pointer">Share on WhatsApp</button></div>
+  <button onclick="createOrder()" style="width:100%;margin-top:10px;padding:13px;border:0;background:#123b5d;color:#fff;border-radius:10px;font-weight:800;cursor:pointer">Continue to Quick Order</button>
+ </section>
+</div>
 
 <footer>
 <h3>Choudhary Medical and Drug Distributors</h3>
@@ -1709,31 +1719,51 @@ footer p{margin-top:7px;opacity:.85}
 
 <script>
 let cart={};
-
+try { cart=JSON.parse(localStorage.getItem('cmadd2-enquiry-cart')||'{}')||{}; } catch(e) { cart={}; }
+function saveCart(){try{localStorage.setItem('cmadd2-enquiry-cart',JSON.stringify(cart));}catch(e){}}
 function changeQty(btn,delta){
   const span=btn.parentElement.querySelector('span');
-  let q=Math.max(1,parseInt(span.textContent)+delta);
+  let q=Math.max(1,parseInt(span.textContent,10)+delta);
   span.textContent=q;
 }
-
 function addToCart(btn,name){
   const card=btn.closest('.product');
-  const qty=parseInt(card.querySelector('.qtyrow span').textContent);
-  cart[name]=(cart[name]||0)+qty;
-  updateCount();
-  btn.textContent='✓ Added';
-  setTimeout(()=>btn.textContent='Add to Cart',900);
+  const qty=Math.max(1,parseInt(card.querySelector('.qtyrow span').textContent,10)||1);
+  cart[name]=(Number(cart[name])||0)+qty;
+  saveCart();updateCount();renderCart();openCart();
+  const old=btn.textContent;btn.textContent='✓ Added to cart';setTimeout(()=>btn.textContent=old,1000);
 }
-
-function updateCount(){
-  document.getElementById('count').textContent=Object.values(cart).reduce((a,b)=>a+b,0);
+function updateCount(){document.getElementById('count').textContent=Object.values(cart).reduce((a,b)=>a+(Number(b)||0),0);}
+function openCart(){renderCart();document.getElementById('cartPanel').style.display='flex';document.body.style.overflow='hidden';}
+function closeCart(){document.getElementById('cartPanel').style.display='none';document.body.style.overflow='';}
+function renderCart(){
+ const box=document.getElementById('cartItems'),empty=document.getElementById('cartEmpty');
+ const items=Object.entries(cart).filter(([n,q])=>Number(q)>0);
+ box.innerHTML='';empty.style.display=items.length?'none':'block';
+ items.forEach(([name,qty])=>{
+  const row=document.createElement('div');
+  row.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #e6edf1';
+  const label=document.createElement('div');label.style.cssText='font-weight:700;color:#173047;overflow-wrap:anywhere';label.textContent=name+' × '+qty;
+  const controls=document.createElement('div');controls.style.cssText='display:flex;gap:6px;flex-shrink:0';
+  const minus=document.createElement('button');minus.textContent='−';minus.title='Remove one';minus.style.cssText='border:0;border-radius:8px;padding:7px 11px;background:#edf3f7;cursor:pointer';minus.onclick=()=>{cart[name]=Math.max(0,(Number(cart[name])||0)-1);if(!cart[name])delete cart[name];saveCart();updateCount();renderCart();};
+  const plus=document.createElement('button');plus.textContent='+';plus.title='Add one';plus.style.cssText=minus.style.cssText;plus.onclick=()=>{cart[name]=(Number(cart[name])||0)+1;saveCart();updateCount();renderCart();};
+  const remove=document.createElement('button');remove.textContent='Remove';remove.style.cssText='border:0;border-radius:8px;padding:7px 9px;background:#fff0f0;color:#a22;cursor:pointer';remove.onclick=()=>{delete cart[name];saveCart();updateCount();renderCart();};
+  controls.append(minus,plus,remove);row.append(label,controls);box.append(row);
+ });
 }
-
+function clearCart(){cart={};saveCart();updateCount();renderCart();}
 function sendWhatsApp(){
-  if(Object.keys(cart).length===0){alert('Cart is empty.');return;}
-  let lines=Object.entries(cart).map(([name,q],i)=>`${i+1}. ${name} × ${q}`).join('\n');
-  let msg='Hello Choudhary Medical and Drug Distributors,\n\nI want to enquire about:\n'+lines+'\n\nPlease share availability and details.';
-  window.open('https://wa.me/918000540156?text='+encodeURIComponent(msg),'_blank');
+ const items=Object.entries(cart).filter(([n,q])=>Number(q)>0);
+ if(!items.length){alert('Your cart is empty. Please add a product first.');return;}
+ const lines=items.map(([name,q],i)=>`${i+1}. ${name} × ${q}`).join('\n');
+ const msg='Hello Choudhary Medical and Drug Distributors,\n\nPlease check availability for these products:\n'+lines+'\n\nPlease confirm availability and pack details. Thank you.';
+ window.open('https://wa.me/918000540156?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
+}
+function createOrder(){
+ const items=Object.entries(cart).filter(([n,q])=>Number(q)>0);
+ if(!items.length){alert('Please add a product to your cart first.');return;}
+ const details=items.map(([name,q])=>name+' — '+q+' unit(s)').join('\n');
+ location.href='create-order.html?items='+encodeURIComponent(details);
 }
 
 function searchProducts(){
@@ -1750,7 +1780,7 @@ if(!cmaddVisitor){cmaddVisitor=(crypto.randomUUID?crypto.randomUUID():String(Dat
 function cmaddTrack(eventType,detail=''){fetch('/api/activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitorKey:cmaddVisitor,eventType,page:location.pathname,detail})}).catch(()=>{})}
 cmaddTrack('page_view');
 if(cmaddReturning) cmaddTrack('repeat_visit');
-document.querySelectorAll('.product').forEach(card=>card.addEventListener('click',e=>{if(e.target.closest('button'))return;cmaddTrack('product_view',card.dataset.name||card.querySelector('h3')?.textContent||'product')}));
+updateCount();renderCart();\ndocument.getElementById('cartPanel').addEventListener('click',e=>{if(e.target.id==='cartPanel')closeCart()});\ndocument.querySelectorAll('.product').forEach(card=>card.addEventListener('click',e=>{if(e.target.closest('button'))return;cmaddTrack('product_view',card.dataset.name||card.querySelector('h3')?.textContent||'product')}));
 document.querySelectorAll('.product button').forEach(btn=>btn.addEventListener('click',()=>cmaddTrack('enquiry_click',btn.closest('.product')?.dataset.name||'product action')));
 const oldSendWhatsApp=window.sendWhatsApp;
 if(typeof oldSendWhatsApp==='function') window.sendWhatsApp=function(){cmaddTrack('whatsapp_click','product cart enquiry');return oldSendWhatsApp.apply(this,arguments)};
