@@ -32,32 +32,26 @@
 const orderParams=new URLSearchParams(location.search);
 const cartItems=orderParams.get('items');
 if(cartItems) document.getElementById('orderDetails').value=cartItems;
-document.getElementById('orderForm').addEventListener('submit',function(e){
+const form=document.getElementById('orderForm');
+form.addEventListener('submit',async function(e){
  e.preventDefault();if(!this.reportValidity())return;
- const d=new FormData(this);const now=new Date();
- const date=now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0');
- const bytes=new Uint8Array(4);crypto.getRandomValues(bytes);
- const suffix=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('').toUpperCase().slice(0,6);
- const id='CMD-ORD-'+date+'-'+suffix;
- document.getElementById('trackingId').textContent=id;
- document.getElementById('orderResult').style.display='block';
- document.getElementById('trackLink').href='track-order.html?trackingId='+encodeURIComponent(id);
- document.getElementById('orderResult').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
- const msg=[
- '📦 *NEW ORDER REQUEST*','',
- '*Order Tracking ID:* '+id,
- '*Business:* Choudhary Medical and Drug Distributors',
- '*Medical / Shop Name:* '+String(d.get('medicalName')).trim(),
- '*Mobile:* '+String(d.get('mobile')).trim(),
- '*Products & Quantity:*\n'+String(d.get('orderDetails')).trim(),
- '*Note:* '+(String(d.get('notes')||'').trim()||'None'),
- '',
- 'Please confirm availability and order status for this Tracking ID.',
- 'Sent from CMADD2 Quick Order page.'
- ].join('\n');
- window.open('https://wa.me/918000540156?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
+ const btn=form.querySelector('button[type="submit"]');btn.disabled=true;btn.textContent='Saving order…';
+ try{
+  const d=new FormData(form), shop=String(d.get('medicalName')).trim(), mobile=String(d.get('mobile')).trim(), details=String(d.get('orderDetails')).trim(), notes=String(d.get('notes')||'').trim();
+  const response=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({customer_name:shop,medical_name:shop,mobile,order_details:details,notes})});
+  const data=await response.json();if(!response.ok||!data.success)throw new Error(data.message||'Order save failed');
+  const id=data.tracking_id;
+  document.getElementById('trackingId').textContent=id;
+  document.getElementById('orderResult').style.display='block';
+  document.getElementById('trackLink').href='track-order.html?trackingId='+encodeURIComponent(id);
+  document.getElementById('orderResult').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
+  try{const old=JSON.parse(localStorage.getItem('cmadd2-recent-orders')||'[]');old.unshift({tracking_id:id,shop,mobile,details,created_at:new Date().toISOString()});localStorage.setItem('cmadd2-recent-orders',JSON.stringify(old.slice(0,10)))}catch(_){}
+  const msg=['📦 *NEW ORDER REQUEST*','', '*Order Tracking ID:* '+id,'*Business:* Choudhary Medical and Drug Distributors','*Medical / Shop Name:* '+shop,'*Mobile:* '+mobile,'*Products & Quantity:*\n'+details,'*Note:* '+(notes||'None'),'','Please confirm availability and order status for this Tracking ID.','Sent from CMADD2 Quick Order page.'].join('\n');
+  window.open('https://wa.me/918000540156?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
+ }catch(err){alert('Order save nahi hua: '+err.message+'\nPlease retry or use Share on WhatsApp from the cart.')}
+ finally{btn.disabled=false;btn.textContent='✅ Continue on WhatsApp'}
 });
-const id=new URLSearchParams(location.search).get('trackingId');if(id){document.getElementById('trackingId').textContent=id;document.getElementById('orderResult').style.display='block';}
+const existingId=new URLSearchParams(location.search).get('trackingId');if(existingId){document.getElementById('trackingId').textContent=existingId;document.getElementById('orderResult').style.display='block';}
 </script>
 <script src="/ai-assistant.js?v=3" defer></script>
 </body></html>
