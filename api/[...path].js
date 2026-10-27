@@ -10,7 +10,8 @@ async function db(path, method="GET", body, prefer) {
   if(!r.ok) throw new Error((data&&data.message)||("Database request failed ("+r.status+")"));
   return data;
 }
-function equalText(a,b){const x=crypto.createHash("sha256").update(String(a)).digest();const y=crypto.createHash("sha256").update(String(b)).digest();return crypto.timingSafeEqual(x,y)}\nfunction sign(payload){const raw=Buffer.from(JSON.stringify(payload)).toString("base64url");return raw+"."+crypto.createHmac("sha256",process.env.ADMIN_TOKEN_SECRET||"").update(raw).digest("base64url");}
+function equalText(a,b){const x=crypto.createHash("sha256").update(String(a)).digest();const y=crypto.createHash("sha256").update(String(b)).digest();return crypto.timingSafeEqual(x,y)}
+function sign(payload){const raw=Buffer.from(JSON.stringify(payload)).toString("base64url");return raw+"."+crypto.createHmac("sha256",process.env.ADMIN_TOKEN_SECRET||"").update(raw).digest("base64url");}
 function isAdmin(req){try{const t=(req.headers.authorization||"").replace(/^Bearer\s+/i,"");const [raw,sig]=t.split(".");if(!raw||!sig||!process.env.ADMIN_TOKEN_SECRET)return false;const expected=crypto.createHmac("sha256",process.env.ADMIN_TOKEN_SECRET).update(raw).digest();const actual=Buffer.from(sig,"base64url");if(expected.length!==actual.length||!crypto.timingSafeEqual(expected,actual))return false;const p=JSON.parse(Buffer.from(raw,"base64url").toString());return p.role==="admin"&&p.exp>Date.now()}catch{return false}}
 function needAdmin(req,res){if(!isAdmin(req)){json(res,401,{success:false,message:"Admin login required"});return false}return true}
 function id(prefix){return prefix+"-"+new Date().toISOString().slice(0,10).replace(/-/g,"")+"-"+crypto.randomBytes(3).toString("hex").toUpperCase()}
