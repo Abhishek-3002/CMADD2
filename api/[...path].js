@@ -1,0 +1,60 @@
+const crypto = require("node:crypto");
+const DB = () => process.env.SUPABASE_URL;
+const KEY = () => process.env.SUPABASE_SERVICE_ROLE_KEY;
+const json = (res, status, body) => { res.statusCode=status; res.setHeader("Content-Type","application/json; charset=utf-8"); res.setHeader("Cache-Control","no-store"); res.end(JSON.stringify(body)); };
+const safe = (v,n=5000) => String(v ?? "").trim().slice(0,n);
+async function db(path, method="GET", body) {
+  if (!DB() || !KEY()) throw new Error("Supabase environment variables are not configured.");
+  const r = await fetch(DB().replace(/\/$/,"")+"/rest/v1/"+path, {method, headers:{apikey:KEY(),Authorization:"Bearer "+KEY(),"Content-Type":"application/json",Prefer:method==="POST"?"return=representation":method==="PATCH"?"return=representation":"return=minimal"}, ...(body===undefined?{}:{body:JSON.stringify(body)})});
+  const t=await r.text(); let data=null; try{data=t?JSON.parse(t):null}catch{}
+  if(!r.ok) throw new Error((data&&data.message)||("Database request failed ("+r.status+")"));
+  return data;
+}
+function sign(payload){const raw=Buffer.from(JSON.stringify(payload)).toString("base64url");return raw+"."+crypto.createHmac("sha256",process.env.ADMIN_TOKEN_SECRET||"").update(raw).digest("base64url");}
+function isAdmin(req){try{const t=(req.headers.authorization||"").replace(/^Bearer\s+/i,"");const [raw,sig]=t.split(".");if(!raw||!sig||!process.env.ADMIN_TOKEN_SECRET)return false;const expected=crypto.createHmac("sha256",process.env.ADMIN_TOKEN_SECRET).update(raw).digest();const actual=Buffer.from(sig,"base64url");if(expected.length!==actual.length||!crypto.timingSafeEqual(expected,actual))return false;const p=JSON.parse(Buffer.from(raw,"base64url").toString());return p.role==="admin"&&p.exp>Date.now()}catch{return false}}
+function needAdmin(req,res){if(!isAdmin(req)){json(res,401,{success:false,message:"Admin login required"});return false}return true}
+function id(prefix){return prefix+"-"+new Date().toISOString().slice(0,10).replace(/-/g,"")+"-"+crypto.randomBytes(3).toString("hex").toUpperCase()}
+module.exports = async (req,res) => {
+ const path="/"+(req.url||"").split("?")[0].replace(/^\/api\//,"").replace(/\/$/,"");
+ const method=req.method||"GET";
+ try {
+  if(path==="/admin/login"&&method==="POST"){
+   const b=req.body||{}; if(!process.env.ADMIN_USERNAME||!process.env.ADMIN_PASSWORD||!process.env.ADMIN_TOKEN_SECRET) return json(res,503,{success:false,message:"Set ADMIN_USERNAME, ADMIN_PASSWORD and ADMIN_TOKEN_SECRET in Vercel Environment Variables."});
+   if(!crypto.timingSafeEqual(Buffer.from(safe(b.username,200)),Buffer.from(process.env.ADMIN_USERNAME))||safe(b.password,500)!==process.env.ADMIN_PASSWORD) return json(res,401,{success:false,message:"Invalid username or password"});
+   return json(res,200,{success:true,token:sign({role:"admin",exp:Date.now()+8*60*60*1000})});
+  }
+  if(path==="/products"&&method==="GET"){const data=await db("products?select=id,product_key,name,category,image_url,availability,active,sort_order&active=eq.true&order=sort_order.asc,name.asc");return json(res,200,{success:true,products:data||[]})}
+  if(path==="/campaigns"&&method==="GET"){const today=new Date().toISOString().slice(0,10);const data=await db("campaigns?select=id,title,occasion,details,categories,products,start_date,end_date,coupon,banner_url,active&active=eq.true&start_date=lte."+today+"&end_date=gte."+today+"&order=created_at.desc");return json(res,200,{success:true,campaigns:data||[]})}
+  if(path==="/orders"&&method==="POST"){
+   const b=req.body||{};const customer=safe(b.customer_name||b.medical_name,160), mobile=safe(b.mobile,20), details=safe(b.order_details||b.orderDetails,5000);
+   if(!customer||!mobile||!details)return json(res,400,{success:false,message:"Shop name, mobile and product list are required."});
+   const tracking=id("CMD-ORD");const items=Array.isArray(b.items)?b.items.map(x=>({name:safe(x.name,200),quantity:Math.max(1,Math.min(9999,Number(x.quantity)||1))})):details.split(/\n/).filter(Boolean).map(line=>({name:safe(line,300),quantity:1}));
+   const rows=await db("orders","POST",{tracking_id:tracking,customer_name:customer,medical_name:customer,mobile,order_details:details,order_items:items,status:"Received"});
+   await db("order_events","POST",{tracking_id:tracking,status:"Received",note:"Order request received"});
+   return json(res,201,{success:true,tracking_id:tracking,order:(rows||[])[0]||null});
+  }
+  if(path==="/track-order"&&method==="GET"){const u=new URL(req.url,"https://cmadd2.invalid");const tracking=safe(u.searchParams.get("trackingId"),100);if(!tracking)return json(res,400,{success:false,message:"Tracking ID required"});const rows=await db("orders?select=tracking_id,customer_name,medical_name,status,created_at,updated_at,order_details&tracking_id=eq."+encodeURIComponent(tracking)+"&limit=1");if(!rows.length)return json(res,404,{success:false,message:"Order not found. Please check the Tracking ID."});const events=await db("order_events?select=status,note,created_at&tracking_id=eq."+encodeURIComponent(tracking)+"&order=created_at.desc");return json(res,200,{success:true,order:rows[0],events:events||[]})}
+  if(path==="/complaints"&&method==="POST"){const b=req.body||{};const complaint_id=id("CMD");const rows=await db("complaints","POST",{complaint_id,customer_name:safe(b.customer_name||b.name,160),mobile:safe(b.mobile,20),complaint_type:safe(b.complaint_type||b.type,150),details:safe(b.details||b.message,4000),status:"Pending"});return json(res,201,{success:true,complaint_id,complaint:(rows||[])[0]||null})}
+  if(path==="/feedback"&&method==="POST"){const b=req.body||{};const rows=await db("feedback","POST",{customer_name:safe(b.customer_name||b.name,160),mobile:safe(b.mobile,20),rating:Math.max(1,Math.min(5,Number(b.rating)||5)),message:safe(b.message,3000)});return json(res,201,{success:true,feedback:(rows||[])[0]||null})}
+  if(path==="/activity"&&method==="POST"){const b=req.body||{};await db("activity_events","POST",{visitor_key:safe(b.visitorKey,100),event_type:safe(b.eventType,100),page:safe(b.page,300),detail:safe(b.detail,500)});return json(res,204,{success:true})}
+  if(path.startsWith("/admin/")){
+   if(path==="/admin/logout"&&method==="POST")return json(res,200,{success:true});
+   if(!needAdmin(req,res))return;
+   if(path==="/admin/products"&&method==="GET")return json(res,200,{success:true,products:await db("products?select=*&order=sort_order.asc,name.asc")});
+   if(path==="/admin/products"&&method==="POST"){const b=req.body||{};if(!safe(b.name,200))return json(res,400,{success:false,message:"Product name required"});const key=safe(b.product_key,100)||safe(b.name,200).toLowerCase().replace(/[^a-z0-9]+/g,"-");const rows=await db("products","POST",{product_key:key,name:safe(b.name,200),category:safe(b.category,150),image_url:safe(b.image_url,1000),availability:["In Stock","Limited Stock","Contact for Availability","Out of Stock"].includes(b.availability)?b.availability:"Contact for Availability",active:b.active!==false,sort_order:Number(b.sort_order)||1000});return json(res,201,{success:true,product:rows?.[0]})}
+   const pm=path.match(/^\/admin\/products\/(\d+)$/);if(pm&&method==="PATCH"){const b=req.body||{},patch={};for(const k of ["name","category","image_url","availability","active","sort_order"])if(b[k]!==undefined)patch[k]=b[k];patch.updated_at=new Date().toISOString();const rows=await db("products?id=eq."+pm[1],"PATCH",patch);return json(res,200,{success:true,product:rows?.[0]})}
+   if(path==="/admin/campaigns"&&method==="GET")return json(res,200,{success:true,campaigns:await db("campaigns?select=*&order=created_at.desc")});
+   if(path==="/admin/campaigns"&&method==="POST"){const b=req.body||{};const rows=await db("campaigns","POST",{title:safe(b.title,200),occasion:safe(b.occasion,100),details:safe(b.details,4000),categories:safe(b.categories,500),products:safe(b.products,1000),start_date:b.start_date||new Date().toISOString().slice(0,10),end_date:b.end_date||new Date().toISOString().slice(0,10),coupon:safe(b.coupon,100),banner_url:safe(b.banner_url,1000),active:b.active!==false});return json(res,201,{success:true,campaign:rows?.[0]})}
+   const cm=path.match(/^\/admin\/campaigns\/(\d+)$/);if(cm&&method==="PATCH"){const b=req.body||{},patch={};for(const k of ["title","occasion","details","categories","products","start_date","end_date","coupon","banner_url","active"])if(b[k]!==undefined)patch[k]=b[k];const rows=await db("campaigns?id=eq."+cm[1],"PATCH",patch);return json(res,200,{success:true,campaign:rows?.[0]})}
+   if(path==="/admin/orders"&&method==="GET")return json(res,200,{success:true,orders:await db("orders?select=*&order=created_at.desc&limit=300")});
+   const om=path.match(/^\/admin\/orders\/([^/]+)$/);if(om&&method==="PATCH"){const b=req.body||{};const status=safe(b.status,50);if(!["Received","Processing","Dispatched","Delivered","Pending","Rejected","In progress"].includes(status))return json(res,400,{success:false,message:"Invalid order status"});const tracking=decodeURIComponent(om[1]);const rows=await db("orders?tracking_id=eq."+encodeURIComponent(tracking),"PATCH",{status,updated_at:new Date().toISOString()});await db("order_events","POST",{tracking_id:tracking,status,note:safe(b.note,500)});const order=rows?.[0];if(order)await db("notifications","POST",{kind:"order_status",title:"Order status updated",message:"Your order "+tracking+" is now "+status+".",tracking_id:tracking,mobile:order.mobile||""});return json(res,200,{success:true,order:order||null})}
+   if(path==="/admin/dashboard"&&method==="GET"){const [orders,complaints,feedback,enquiries,campaigns,products]=await Promise.all(["orders?select=id&limit=1000","complaints?select=id&limit=1000","feedback?select=id&limit=1000","enquiries?select=id&limit=1000","campaigns?select=id&limit=1000","products?select=id&limit=1000"].map(p=>db(p)));return json(res,200,{success:true,stats:{orders:orders.length,complaints:complaints.length,feedback:feedback.length,enquiries:enquiries.length,campaigns:campaigns.length,products:products.length}})}
+   if(path==="/admin/complaints"&&method==="GET")return json(res,200,{success:true,complaints:await db("complaints?select=*&order=created_at.desc&limit=300")});
+   if(path==="/admin/feedback"&&method==="GET")return json(res,200,{success:true,feedback:await db("feedback?select=*&order=created_at.desc&limit=300")});
+   if(path==="/admin/enquiries"&&method==="GET")return json(res,200,{success:true,enquiries:await db("enquiries?select=*&order=created_at.desc&limit=300")});
+   const co=path.match(/^\/admin\/complaints\/([^/]+)$/);if(co&&method==="PATCH"){const rows=await db("complaints?id=eq."+encodeURIComponent(co[1]),"PATCH",{status:safe((req.body||{}).status,80)});return json(res,200,{success:true,complaint:rows?.[0]})}
+   return json(res,404,{success:false,message:"Admin API route not found"});
+  }
+  return json(res,404,{success:false,message:"API route not found"});
+ } catch(e){console.error("CMADD API:",e.message);return json(res,500,{success:false,message:process.env.NODE_ENV==="development"?e.message:"Server error. Check Vercel Function Logs and database configuration."})}
+};
