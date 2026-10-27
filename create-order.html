@@ -29,7 +29,8 @@
 </form>
 </section><p class="footnote">Choudhary Medical and Drug Distributors • Pugal Phanta, Bikaner</p></main>
 <script>
-function repeatLastOrder(){try{const a=JSON.parse(localStorage.getItem("cmadd2-recent-orders")||"[]");if(!a.length){alert("Is device par previous order nahi mila.");return}const o=a[0];if(o.shop)document.getElementById("medicalName").value=o.shop;if(o.mobile)document.getElementById("mobile").value=o.mobile;if(o.details)document.getElementById("orderDetails").value=o.details;document.getElementById("notes").value="Repeat of "+o.tracking_id;alert("Previous order details loaded. Check quantities and submit to create a new order.")}catch(e){alert("Previous order load nahi ho paya.")}}\nconst orderParams=new URLSearchParams(location.search);
+function repeatLastOrder(){try{const a=JSON.parse(localStorage.getItem("cmadd2-recent-orders")||"[]");if(!a.length){alert("Is device par previous order nahi mila.");return}const o=a[0];if(o.shop)document.getElementById("medicalName").value=o.shop;if(o.mobile)document.getElementById("mobile").value=o.mobile;if(o.details)document.getElementById("orderDetails").value=o.details;document.getElementById("notes").value="Repeat of "+o.tracking_id;alert("Previous order details loaded. Check quantities and submit to create a new order.")}catch(e){alert("Previous order load nahi ho paya.")}}
+const orderParams=new URLSearchParams(location.search);
 const cartItems=orderParams.get('items');
 if(cartItems) document.getElementById('orderDetails').value=cartItems;
 const form=document.getElementById('orderForm');
