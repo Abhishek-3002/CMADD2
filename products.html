@@ -1780,7 +1780,8 @@ if(!cmaddVisitor){cmaddVisitor=(crypto.randomUUID?crypto.randomUUID():String(Dat
 function cmaddTrack(eventType,detail=''){fetch('/api/activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitorKey:cmaddVisitor,eventType,page:location.pathname,detail})}).catch(()=>{})}
 cmaddTrack('page_view');
 if(cmaddReturning) cmaddTrack('repeat_visit');
-updateCount();renderCart();\ndocument.getElementById('cartPanel').addEventListener('click',e=>{if(e.target.id==='cartPanel')closeCart()});\ndocument.querySelectorAll('.product').forEach(card=>card.addEventListener('click',e=>{if(e.target.closest('button'))return;cmaddTrack('product_view',card.dataset.name||card.querySelector('h3')?.textContent||'product')}));
+updateCount();renderCart();
+document.getElementById('cartPanel').addEventListener('click',e=>{if(e.target.id==='cartPanel')closeCart()});\ndocument.querySelectorAll('.product').forEach(card=>card.addEventListener('click',e=>{if(e.target.closest('button'))return;cmaddTrack('product_view',card.dataset.name||card.querySelector('h3')?.textContent||'product')}));
 document.querySelectorAll('.product button').forEach(btn=>btn.addEventListener('click',()=>cmaddTrack('enquiry_click',btn.closest('.product')?.dataset.name||'product action')));
 const oldSendWhatsApp=window.sendWhatsApp;
 if(typeof oldSendWhatsApp==='function') window.sendWhatsApp=function(){cmaddTrack('whatsapp_click','product cart enquiry');return oldSendWhatsApp.apply(this,arguments)};
