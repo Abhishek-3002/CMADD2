@@ -32,6 +32,7 @@
 function repeatLastOrder(){try{const a=JSON.parse(localStorage.getItem("cmadd2-recent-orders")||"[]");if(!a.length){alert("Is device par previous order nahi mila.");return}const o=a[0];if(o.shop)document.getElementById("medicalName").value=o.shop;if(o.mobile)document.getElementById("mobile").value=o.mobile;if(o.details)document.getElementById("orderDetails").value=o.details;document.getElementById("notes").value="Repeat of "+o.tracking_id;alert("Previous order details loaded. Check quantities and submit to create a new order.")}catch(e){alert("Previous order load nahi ho paya.")}}
 const orderParams=new URLSearchParams(location.search);
 const cartItems=orderParams.get('items');
+const enquiryId=orderParams.get('enquiryId')||'';
 if(cartItems) document.getElementById('orderDetails').value=cartItems;
 const form=document.getElementById('orderForm');
 form.addEventListener('submit',async function(e){
@@ -47,7 +48,7 @@ form.addEventListener('submit',async function(e){
   document.getElementById('trackLink').href='track-order.html?trackingId='+encodeURIComponent(id);
   document.getElementById('orderResult').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
   try{const old=JSON.parse(localStorage.getItem('cmadd2-recent-orders')||'[]');old.unshift({tracking_id:id,shop,mobile,details,created_at:new Date().toISOString()});localStorage.setItem('cmadd2-recent-orders',JSON.stringify(old.slice(0,10)))}catch(_){}
-  const msg=['📦 *NEW ORDER REQUEST*','', '*Order Tracking ID:* '+id,'*Business:* Choudhary Medical and Drug Distributors','*Medical / Shop Name:* '+shop,'*Mobile:* '+mobile,'*Products & Quantity:*\n'+details,'*Note:* '+(notes||'None'),'','Please confirm availability and order status for this Tracking ID.','Sent from CMADD2 Quick Order page.'].join('\n');
+  const msg=['📦 *NEW ORDER REQUEST*','', '*Order Tracking ID:* '+id,...(enquiryId?['*Product Enquiry ID:* '+enquiryId]:[]),'*Business:* Choudhary Medical and Drug Distributors','*Medical / Shop Name:* '+shop,'*Mobile:* '+mobile,'*Products & Quantity:*\n'+details,'*Note:* '+(notes||'None'),'','Please confirm availability and order status for this Tracking ID.','Sent from CMADD2 Quick Order page.'].join('\n');
   window.open('https://wa.me/918000540156?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
  }catch(err){alert('Order save nahi hua: '+err.message+'\nPlease retry or use Share on WhatsApp from the cart.')}
  finally{btn.disabled=false;btn.textContent='✅ Continue on WhatsApp'}
