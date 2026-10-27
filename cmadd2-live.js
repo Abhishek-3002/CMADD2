@@ -16,7 +16,7 @@ try{
    if(p.active===false||!root)return;
    const cardNew=el('article',undefined,'product');cardNew.dataset.name=name+' '+(p.category||'');cardNew.dataset.availability=p.availability||'Contact for Availability';
    const imgBox=el('div',undefined,'imgbox');if(p.image_url){const img=el('img');img.loading='lazy';img.src=p.image_url;img.alt=name;imgBox.append(img)}else{imgBox.append(el('div','💊'));imgBox.firstChild.style.cssText='padding:35px;text-align:center;font-size:38px'}
-   const info=el('div',undefined,'info');info.append(el('div',p.category||'Product','brand'),el('h3',name),el('p',p.availability||'Contact for Availability','availability'));
+   const info=el('div',undefined,'info');info.append(el('div',p.category||'Product','brand'),el('h3',name),el('p',p.description||'','description'),el('p',p.availability||'Contact for Availability','availability'));
    info.querySelector('.availability').style.cssText='font-size:12px;font-weight:700;color:#087f8c;margin:8px 0';
    const qty=el('div',undefined,'qtyrow');const minus=el('button','−'),number=el('span','1'),plus=el('button','+');minus.onclick=()=>{number.textContent=Math.max(1,Number(number.textContent)-1)};plus.onclick=()=>{number.textContent=Number(number.textContent)+1};qty.append(minus,number,plus);
    const add=el('button','Add to Cart','add');add.onclick=()=>{const n=Number(number.textContent)||1;for(let i=0;i<n;i++)cart[name]=(Number(cart[name])||0)+1;saveCart();updateCount();renderCart();openCart()};info.append(qty,add);cardNew.append(imgBox,info);root.append(cardNew);
