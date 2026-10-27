@@ -18,20 +18,20 @@
 <p>Apni medical shop details aur order ki list likhein. Aapko ek Order Tracking ID milegi aur order details WhatsApp par share karne ke liye khul jayengi.</p>
 <form id="orderForm">
 <div class="grid">
-<div class="field"><label for="customerName">Customer Name *</label><input id="customerName" name="customerName" required autocomplete="name" placeholder="Your full name"></div>
-<div class="field"><label for="medicalName">Medical / Shop Name *</label><input id="medicalName" name="medicalName" required placeholder="Medical shop name"></div>
-<div class="field"><label for="mobile">Mobile Number *</label><input id="mobile" name="mobile" type="tel" inputmode="tel" pattern="[0-9+() -]{10,16}" required autocomplete="tel" placeholder="Contact number"></div>
-<div class="field"><label for="city">City / Area *</label><input id="city" name="city" required placeholder="e.g. Bikaner"></div>
-<div class="field full"><label for="address">Shop Address</label><input id="address" name="address" autocomplete="street-address" placeholder="Full shop address (optional)"></div>
-<div class="field full"><label for="orderDetails">Order Details * </label><textarea id="orderDetails" name="orderDetails" required placeholder="Write product names, strengths, pack size and quantity. Example: Product name — 10 boxes"></textarea></div>
-<div class="field full"><label for="notes">Additional Note</label><input id="notes" name="notes" placeholder="Any special instructions (optional)"></div>
+<div class="field"><label for="medicalName">Medical / Shop Name *</label><input id="medicalName" name="medicalName" required autocomplete="organization" placeholder="Your shop name"></div>
+<div class="field"><label for="mobile">Mobile Number *</label><input id="mobile" name="mobile" type="tel" inputmode="tel" pattern="[0-9+() -]{10,16}" required autocomplete="tel" placeholder="10-digit mobile number"></div>
+<div class="field full"><label for="orderDetails">Products & Quantity *</label><textarea id="orderDetails" name="orderDetails" required placeholder="Product name — quantity"></textarea><small style="color:#607487">Cart se aaye products yahan automatically fill ho jayenge. Zarurat ho to edit kar sakte hain.</small></div>
+<div class="field full"><label for="notes">Note (optional)</label><input id="notes" name="notes" placeholder="Delivery / pack-size preference, if any"></div>
 </div>
-<button class="btn" type="submit">✅ Generate Tracking ID & Share on WhatsApp</button>
-<div class="result" id="orderResult" role="status" aria-live="polite"><span>Order reference created</span><strong id="trackingId"></strong><span>Keep this ID for follow-up. WhatsApp will open with the order details included.</span><br><a id="trackLink" href="track-order.html">Open order tracking request →</a></div>
-<p class="note">WhatsApp message will be prepared for you. Please press Send in WhatsApp to submit the order.</p>
+<button class="btn" type="submit">✅ Continue on WhatsApp</button>
+<div class="result" id="orderResult" role="status" aria-live="polite"><span>Order reference created</span><strong id="trackingId"></strong><span>Tracking ID ko follow-up ke liye save kar lein.</span><br><a id="trackLink" href="track-order.html">Open order tracking request →</a></div>
+<p class="note">WhatsApp khulega—order bhejne ke liye bas Send dabayein.</p>
 </form>
 </section><p class="footnote">Choudhary Medical and Drug Distributors • Pugal Phanta, Bikaner</p></main>
 <script>
+const orderParams=new URLSearchParams(location.search);
+const cartItems=orderParams.get('items');
+if(cartItems) document.getElementById('orderDetails').value=cartItems;
 document.getElementById('orderForm').addEventListener('submit',function(e){
  e.preventDefault();if(!this.reportValidity())return;
  const d=new FormData(this);const now=new Date();
@@ -47,16 +47,13 @@ document.getElementById('orderForm').addEventListener('submit',function(e){
  '📦 *NEW ORDER REQUEST*','',
  '*Order Tracking ID:* '+id,
  '*Business:* Choudhary Medical and Drug Distributors',
- '*Customer Name:* '+String(d.get('customerName')).trim(),
  '*Medical / Shop Name:* '+String(d.get('medicalName')).trim(),
  '*Mobile:* '+String(d.get('mobile')).trim(),
- '*City / Area:* '+String(d.get('city')).trim(),
- '*Shop Address:* '+(String(d.get('address')||'').trim()||'Not provided'),
- '*Order Details:*\n'+String(d.get('orderDetails')).trim(),
- '*Additional Note:* '+(String(d.get('notes')||'').trim()||'None'),
+ '*Products & Quantity:*\n'+String(d.get('orderDetails')).trim(),
+ '*Note:* '+(String(d.get('notes')||'').trim()||'None'),
  '',
  'Please confirm availability and order status for this Tracking ID.',
- 'Sent from CMADD2 Create an Order page.'
+ 'Sent from CMADD2 Quick Order page.'
  ].join('\n');
  window.open('https://wa.me/918000540156?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
 });
