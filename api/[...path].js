@@ -10,7 +10,7 @@ async function db(path, method="GET", body) {
   if(!r.ok) throw new Error((data&&data.message)||("Database request failed ("+r.status+")"));
   return data;
 }
-function sign(payload){const raw=Buffer.from(JSON.stringify(payload)).toString("base64url");return raw+"."+crypto.createHmac("sha256",process.env.ADMIN_TOKEN_SECRET||"").update(raw).digest("base64url");}
+function equalText(a,b){const x=crypto.createHash("sha256").update(String(a)).digest();const y=crypto.createHash("sha256").update(String(b)).digest();return crypto.timingSafeEqual(x,y)}\nfunction sign(payload){const raw=Buffer.from(JSON.stringify(payload)).toString("base64url");return raw+"."+crypto.createHmac("sha256",process.env.ADMIN_TOKEN_SECRET||"").update(raw).digest("base64url");}
 function isAdmin(req){try{const t=(req.headers.authorization||"").replace(/^Bearer\s+/i,"");const [raw,sig]=t.split(".");if(!raw||!sig||!process.env.ADMIN_TOKEN_SECRET)return false;const expected=crypto.createHmac("sha256",process.env.ADMIN_TOKEN_SECRET).update(raw).digest();const actual=Buffer.from(sig,"base64url");if(expected.length!==actual.length||!crypto.timingSafeEqual(expected,actual))return false;const p=JSON.parse(Buffer.from(raw,"base64url").toString());return p.role==="admin"&&p.exp>Date.now()}catch{return false}}
 function needAdmin(req,res){if(!isAdmin(req)){json(res,401,{success:false,message:"Admin login required"});return false}return true}
 function id(prefix){return prefix+"-"+new Date().toISOString().slice(0,10).replace(/-/g,"")+"-"+crypto.randomBytes(3).toString("hex").toUpperCase()}
@@ -20,7 +20,7 @@ module.exports = async (req,res) => {
  try {
   if(path==="/admin/login"&&method==="POST"){
    const b=req.body||{}; if(!process.env.ADMIN_USERNAME||!process.env.ADMIN_PASSWORD||!process.env.ADMIN_TOKEN_SECRET) return json(res,503,{success:false,message:"Set ADMIN_USERNAME, ADMIN_PASSWORD and ADMIN_TOKEN_SECRET in Vercel Environment Variables."});
-   if(!crypto.timingSafeEqual(Buffer.from(safe(b.username,200)),Buffer.from(process.env.ADMIN_USERNAME))||safe(b.password,500)!==process.env.ADMIN_PASSWORD) return json(res,401,{success:false,message:"Invalid username or password"});
+   if(!equalText(safe(b.username,200),process.env.ADMIN_USERNAME)||!equalText(safe(b.password,500),process.env.ADMIN_PASSWORD)) return json(res,401,{success:false,message:"Invalid username or password"});
    return json(res,200,{success:true,token:sign({role:"admin",exp:Date.now()+8*60*60*1000})});
   }
   if(path==="/products"&&method==="GET"){const data=await db("products?select=id,product_key,name,category,image_url,availability,active,sort_order&active=eq.true&order=sort_order.asc,name.asc");return json(res,200,{success:true,products:data||[]})}
