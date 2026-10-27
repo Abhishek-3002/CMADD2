@@ -25,11 +25,11 @@
 </div>
 <button class="btn" type="submit">✅ Continue on WhatsApp</button>
 <div class="result" id="orderResult" role="status" aria-live="polite"><span>Order reference created</span><strong id="trackingId"></strong><span>Tracking ID ko follow-up ke liye save kar lein.</span><br><a id="trackLink" href="track-order.html">Open order tracking request →</a></div>
-<p class="note">WhatsApp khulega—order bhejne ke liye bas Send dabayein.</p>
+<button type="button" class="btn" style="background:#eaf1f6;color:#123b5d;box-shadow:none;margin-top:10px" onclick="repeatLastOrder()">↻ Repeat Last Order (same device)</button><p class="note">WhatsApp khulega—order bhejne ke liye bas Send dabayein. Repeat history isi browser/device mein save hoti hai.</p>
 </form>
 </section><p class="footnote">Choudhary Medical and Drug Distributors • Pugal Phanta, Bikaner</p></main>
 <script>
-const orderParams=new URLSearchParams(location.search);
+function repeatLastOrder(){try{const a=JSON.parse(localStorage.getItem("cmadd2-recent-orders")||"[]");if(!a.length){alert("Is device par previous order nahi mila.");return}const o=a[0];if(o.shop)document.getElementById("medicalName").value=o.shop;if(o.mobile)document.getElementById("mobile").value=o.mobile;if(o.details)document.getElementById("orderDetails").value=o.details;document.getElementById("notes").value="Repeat of "+o.tracking_id;alert("Previous order details loaded. Check quantities and submit to create a new order.")}catch(e){alert("Previous order load nahi ho paya.")}}\nconst orderParams=new URLSearchParams(location.search);
 const cartItems=orderParams.get('items');
 if(cartItems) document.getElementById('orderDetails').value=cartItems;
 const form=document.getElementById('orderForm');
