@@ -1,19 +1,36 @@
 (async function(){
 const WA='918000540156',root=document.getElementById('products');
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function el(tag,text,cls){const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(cls)x.className=cls;return x}
 try{
- const r=await fetch('/api/products');if(!r.ok)return;const d=await r.json();const list=d.products||[];
- const byKey=new Set();
- list.forEach(p=>{
-  const key=String(p.name||'').trim().toLowerCase();if(!key)return;byKey.add(key);
-  let card=[...document.querySelectorAll('.product')].find(el=>(el.querySelector('h3')?.textContent||'').trim().toLowerCase()===key);
-  if(card){card.style.display=p.active===false?'none':'';card.dataset.availability=p.availability||'Contact for Availability';const old=card.querySelector('.availability');if(old)old.remove();const badge=document.createElement('p');badge.className='availability';badge.textContent=p.availability||'Contact for Availability';badge.style.cssText='font-size:12px;font-weight:700;color:#087f8c;margin:8px 0';card.querySelector('.info')?.insertBefore(badge,card.querySelector('.qtyrow'));return}
-  if(p.active===false)return;
-  const cardNew=document.createElement('article');cardNew.className='product';cardNew.dataset.name=p.name+' '+(p.category||'');cardNew.dataset.availability=p.availability||'Contact for Availability';
-  cardNew.innerHTML='<div class="imgbox">'+(p.image_url?'<img loading="lazy" src="'+esc(p.image_url)+'" alt="'+esc(p.name)+'">':'<div style="padding:35px;text-align:center;font-size:38px">💊</div>')+'</div><div class="info"><div class="brand">'+esc(p.category||'Product')+'</div><h3>'+esc(p.name)+'</h3><p class="availability" style="font-size:12px;font-weight:700;color:#087f8c;margin:8px 0">'+esc(p.availability||'Contact for Availability')+'</p><div class="qtyrow"><button onclick="changeQty(this,-1)">−</button><span>1</span><button onclick="changeQty(this,1)">+</button></div><button class="add" onclick="addToCart(this,\''+String(p.name).replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')">Add to Cart</button></div>';
-  root?.appendChild(cardNew);
- });
- const cr=await fetch('/api/campaigns');if(cr.ok){const cd=await cr.json();const campaigns=cd.campaigns||[];if(campaigns.length){const hero=document.querySelector('.hero');const section=document.createElement('section');section.style.cssText='max-width:1100px;margin:16px auto;padding:0 18px;display:grid;gap:12px';section.innerHTML=campaigns.map(c=>'<div style="border-radius:16px;overflow:hidden;background:#123b5d;color:white;padding:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">'+(c.banner_url?'<img src="'+esc(c.banner_url)+'" alt="" style="width:140px;max-height:90px;object-fit:cover;border-radius:10px">':'')+'<div style="flex:1"><h2>'+esc(c.title)+'</h2><p style="margin-top:6px">'+esc(c.details)+'</p></div><button onclick="window.open(\'https://wa.me/'+WA+'?text=\'+encodeURIComponent('+JSON.stringify('Hello, please share details for campaign: ')+'+'+JSON.stringify(c.title)+'),\'_blank\')">WhatsApp Enquiry</button></div>').join('');hero?.insertAdjacentElement('afterend',section)}}
+ const r=await fetch('/api/products');if(r.ok){
+  const data=await r.json();
+  (data.products||[]).forEach(p=>{
+   const name=String(p.name||'').trim();if(!name)return;
+   const card=[...document.querySelectorAll('.product')].find(x=>(x.querySelector('h3')?.textContent||'').trim().toLowerCase()===name.toLowerCase());
+   if(card){
+    card.style.display=p.active===false?'none':'';
+    card.dataset.availability=p.availability||'Contact for Availability';
+    let badge=card.querySelector('.availability');if(!badge){badge=el('p',undefined,'availability');badge.style.cssText='font-size:12px;font-weight:700;color:#087f8c;margin:8px 0';card.querySelector('.info')?.insertBefore(badge,card.querySelector('.qtyrow'))}
+    badge.textContent=p.availability||'Contact for Availability';return;
+   }
+   if(p.active===false||!root)return;
+   const cardNew=el('article',undefined,'product');cardNew.dataset.name=name+' '+(p.category||'');cardNew.dataset.availability=p.availability||'Contact for Availability';
+   const imgBox=el('div',undefined,'imgbox');if(p.image_url){const img=el('img');img.loading='lazy';img.src=p.image_url;img.alt=name;imgBox.append(img)}else{imgBox.append(el('div','💊'));imgBox.firstChild.style.cssText='padding:35px;text-align:center;font-size:38px'}
+   const info=el('div',undefined,'info');info.append(el('div',p.category||'Product','brand'),el('h3',name),el('p',p.availability||'Contact for Availability','availability'));
+   info.querySelector('.availability').style.cssText='font-size:12px;font-weight:700;color:#087f8c;margin:8px 0';
+   const qty=el('div',undefined,'qtyrow');const minus=el('button','−'),number=el('span','1'),plus=el('button','+');minus.onclick=()=>{number.textContent=Math.max(1,Number(number.textContent)-1)};plus.onclick=()=>{number.textContent=Number(number.textContent)+1};qty.append(minus,number,plus);
+   const add=el('button','Add to Cart','add');add.onclick=()=>{const n=Number(number.textContent)||1;for(let i=0;i<n;i++)cart[name]=(Number(cart[name])||0)+1;saveCart();updateCount();renderCart();openCart()};info.append(qty,add);cardNew.append(imgBox,info);root.append(cardNew);
+  });
+ }
+ const cr=await fetch('/api/campaigns');if(cr.ok){
+  const cd=await cr.json(),campaigns=cd.campaigns||[];
+  if(campaigns.length){const hero=document.querySelector('.hero'),section=el('section');section.style.cssText='max-width:1100px;margin:16px auto;padding:0 18px;display:grid;gap:12px';
+   campaigns.forEach(c=>{const card=el('div');card.style.cssText='border-radius:16px;overflow:hidden;background:#123b5d;color:white;padding:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap';
+    if(c.banner_url){const img=el('img');img.src=c.banner_url;img.alt='';img.style.cssText='width:140px;max-height:90px;object-fit:cover;border-radius:10px';card.append(img)}
+    const text=el('div');text.style.flex='1';text.append(el('h2',c.title),el('p',c.details));card.append(text);const btn=el('button','WhatsApp Enquiry');btn.onclick=()=>{const msg='Hello, please share details for campaign: '+c.title+'\n'+(c.details||'')+'\nPlease confirm product availability.';window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer')};card.append(btn);section.append(card)
+   });hero?.insertAdjacentElement('afterend',section)
+  }
+ }
  if(typeof updateCount==='function')updateCount();if(typeof renderCart==='function')renderCart();
 }catch(e){console.warn('CMADD2 live catalog unavailable:',e.message)}
 })();
