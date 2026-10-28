@@ -7,7 +7,12 @@
 <title>Create an Order | Choudhary Medical and Drug Distributors</title>
 <link rel="stylesheet" href="motion-theme.css?v=5">
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:#173047;background:radial-gradient(circle at top right,#dff4ff,transparent 35%),linear-gradient(135deg,#f7fbff,#eef8f4);min-height:100vh}.top{padding:17px 5%;display:flex;justify-content:space-between;align-items:center;gap:16px;background:#ffffffd9;backdrop-filter:blur(14px);border-bottom:1px solid #dceaf1;position:sticky;top:0;z-index:5}.brand{font-weight:800;color:#123b5d;line-height:1.35}.brand span{color:#168b78}.top a,.btn{color:#fff;background:linear-gradient(135deg,#123b5d,#087f8c);padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:800;border:0;cursor:pointer}.wrap{width:min(850px,92%);margin:38px auto}.card{background:#ffffffed;border:1px solid #dceaf1;border-radius:26px;padding:clamp(22px,5vw,42px);box-shadow:0 24px 70px #123b5d18;animation:up .55s ease both}.tag{font-size:12px;letter-spacing:2px;font-weight:800;color:#168b78}.card h1{font-size:clamp(30px,5vw,44px);margin:10px 0;color:#123b5d}.card p{line-height:1.65;color:#607487}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:24px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:800;color:#23465c}.field input,.field textarea,.field select{font:inherit;padding:14px;border:1px solid #d5e2e9;border-radius:12px;background:#fbfdff;width:100%;outline:none;transition:.2s}.field input:focus,.field textarea:focus,.field select:focus{border-color:#087f8c;box-shadow:0 0 0 4px #087f8c18}.field textarea{min-height:130px;resize:vertical}.btn{width:100%;padding:16px;margin-top:22px;font-size:16px;box-shadow:0 10px 25px #087f8c25}.result{display:none;margin-top:20px;padding:18px;border-radius:16px;border:1px solid #9bd7bf;background:linear-gradient(135deg,#effff7,#f2fbff);overflow-wrap:anywhere}.result strong{display:block;font-size:clamp(20px,4vw,28px);margin:7px 0;color:#126044;letter-spacing:.04em}.note{text-align:center;font-size:12px!important;margin-top:13px}.result a{display:inline-block;margin-top:10px;color:#075e54;font-weight:800}.footnote{font-size:12px;color:#6a7d8c;text-align:center;margin:20px 0}@keyframes up{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}@media(max-width:580px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.top{padding:14px 4%}.wrap{margin:22px auto}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:#173047;background:radial-gradient(circle at top right,#dff4ff,transparent 35%),linear-gradient(135deg,#f7fbff,#eef8f4);min-height:100vh}.top{padding:17px 5%;display:flex;justify-content:space-between;align-items:center;gap:16px;background:#ffffffd9;backdrop-filter:blur(14px);border-bottom:1px solid #dceaf1;position:sticky;top:0;z-index:5}.brand{font-weight:800;color:#123b5d;line-height:1.35}.brand span{color:#168b78}.top a,.btn{color:#fff;background:linear-gradient(135deg,#123b5d,#087f8c);padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:800;border:0;cursor:pointer}.wrap{width:min(850px,92%);margin:38px auto}.card{background:#ffffffed;border:1px solid #dceaf1;border-radius:26px;padding:clamp(22px,5vw,42px);box-shadow:0 24px 70px #123b5d18;animation:up .55s ease both}.tag{font-size:12px;letter-spacing:2px;font-weight:800;color:#168b78}.card h1{font-size:clamp(30px,5vw,44px);margin:10px 0;color:#123b5d}.card p{line-height:1.65;color:#607487}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:24px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:800;color:#23465c}.field input,.field textarea,.field select{font:inherit;padding:14px;border:1px solid #d5e2e9;border-radius:12px;background:#fbfdff;width:100%;outline:none;transition:.2s}.field input:focus,.field textarea:focus,.field select:focus{border-color:#087f8c;box-shadow:0 0 0 4px #087f8c18}.field textarea{min-height:130px;resize:vertical}.btn{width:100%;padding:16px;margin-top:22px;font-size:16px;box-shadow:0 10px 25px #087f8c25}.result{display:none;margin-top:20px;padding:18px;border-radius:16px;border:1px solid #9bd7bf;background:linear-gradient(135deg,#effff7,#f2fbff);overflow-wrap:anywhere}.result strong{display:block;font-size:clamp(20px,4vw,28px);margin:7px 0;color:#126044;letter-spacing:.04em}.note{text-align:center;font-size:12px!important;margin-top:13px}.result a{display:inline-block;margin-top:10px;color:#075e54;font-weight:800}
+.success-screen{display:none;margin-top:24px;padding:28px 20px;text-align:center;border:1px solid #9bd7bf;border-radius:22px;background:linear-gradient(135deg,#effff7,#f2fbff)}
+.success-screen.show{display:block;animation:successPop .55s ease both}.success-icon{width:82px;height:82px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:#d9fbe8;color:#11834a;font-size:42px;animation:successPulse 1.6s ease-out infinite}
+.success-screen h2{margin:8px 0;color:#126044;font-size:clamp(23px,5vw,32px)}.success-screen p{margin:8px auto;max-width:520px}.success-screen .thanks{font-size:23px;margin-top:14px}.success-screen .tracking{display:block;margin:12px 0;color:#123b5d;font-weight:900;font-size:clamp(18px,4vw,24px);overflow-wrap:anywhere}
+@keyframes successPop{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes successPulse{0%{box-shadow:0 0 0 0 #65d99a88;transform:scale(.92)}70%{box-shadow:0 0 0 15px #65d99a00;transform:scale(1)}100%{box-shadow:0 0 0 0 #65d99a00;transform:scale(.98)}}
+.footnote{font-size:12px;color:#6a7d8c;text-align:center;margin:20px 0}@keyframes up{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}@media(max-width:580px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.top{padding:14px 4%}.wrap{margin:22px auto}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -23,8 +28,8 @@
 <div class="field full"><label for="orderDetails">Products & Quantity *</label><textarea id="orderDetails" name="orderDetails" required placeholder="Product name — quantity"></textarea><small style="color:#607487">Cart se aaye products yahan automatically fill ho jayenge. Zarurat ho to edit kar sakte hain.</small></div>
 <div class="field full"><label for="notes">Note (optional)</label><input id="notes" name="notes" placeholder="Delivery / pack-size preference, if any"></div>
 </div>
-<button class="btn" type="submit">✅ Continue on WhatsApp</button>
-<div class="result" id="orderResult" role="status" aria-live="polite"><span>Order reference created</span><strong id="trackingId"></strong><span>Tracking ID ko follow-up ke liye save kar lein.</span><br><a id="trackLink" href="track-order.html">Open order tracking request →</a></div>
+<button class="btn" type="submit">💬 Share Order on WhatsApp</button>
+<div class="success-screen" id="successScreen" role="status" aria-live="polite"><div class="success-icon" aria-hidden="true">✓</div><h2>🎉 Aapka order request confirm ho gaya hai!</h2><p>Aage ki jankari aur order status aapko WhatsApp par diya jayega.</p><span class="tracking" id="trackingId"></span><p class="thanks">Thank you! 🙏😊</p><p style="font-size:13px">WhatsApp khulne par kripya <b>Send</b> bhi dabayein.</p></div>
 <button type="button" class="btn" style="background:#eaf1f6;color:#123b5d;box-shadow:none;margin-top:10px" onclick="repeatLastOrder()">↻ Repeat Last Order (same device)</button><p class="note">WhatsApp khulega—order bhejne ke liye bas Send dabayein. Repeat history isi browser/device mein save hoti hai.</p>
 </form>
 </section><p class="footnote">Choudhary Medical and Drug Distributors • Pugal Phanta, Bikaner</p></main>
@@ -35,25 +40,21 @@ const cartItems=orderParams.get('items');
 const enquiryId=orderParams.get('enquiryId')||'';
 if(cartItems) document.getElementById('orderDetails').value=cartItems;
 const form=document.getElementById('orderForm');
-form.addEventListener('submit',async function(e){
+form.addEventListener('submit',function(e){
  e.preventDefault();if(!this.reportValidity())return;
- const btn=form.querySelector('button[type="submit"]');btn.disabled=true;btn.textContent='Saving order…';
- try{
-  const d=new FormData(form), shop=String(d.get('medicalName')).trim(), mobile=String(d.get('mobile')).trim(), details=String(d.get('orderDetails')).trim(), notes=String(d.get('notes')||'').trim();
-  const response=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({customer_name:shop,medical_name:shop,mobile,order_details:details,notes})});
-  const data=await response.json();if(!response.ok||!data.success)throw new Error(data.message||'Order save failed');
-  const id=data.tracking_id;
-  document.getElementById('trackingId').textContent=id;
-  document.getElementById('orderResult').style.display='block';
-  document.getElementById('trackLink').href='track-order.html?trackingId='+encodeURIComponent(id);
-  document.getElementById('orderResult').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
-  try{const old=JSON.parse(localStorage.getItem('cmadd2-recent-orders')||'[]');old.unshift({tracking_id:id,shop,mobile,details,created_at:new Date().toISOString()});localStorage.setItem('cmadd2-recent-orders',JSON.stringify(old.slice(0,10)))}catch(_){}
-  const msg=['📦 *NEW ORDER REQUEST*','', '*Order Tracking ID:* '+id,...(enquiryId?['*Product Enquiry ID:* '+enquiryId]:[]),'*Business:* Choudhary Medical and Drug Distributors','*Medical / Shop Name:* '+shop,'*Mobile:* '+mobile,'*Products & Quantity:*\n'+details,'*Note:* '+(notes||'None'),'','Please confirm availability and order status for this Tracking ID.','Sent from CMADD2 Quick Order page.'].join('\n');
-  window.open('https://wa.me/918000540156?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
- }catch(err){alert('Order save nahi hua: '+err.message+'\nPlease retry or use Share on WhatsApp from the cart.')}
- finally{btn.disabled=false;btn.textContent='✅ Continue on WhatsApp'}
+ const btn=form.querySelector('button[type="submit"]');
+ const d=new FormData(form), shop=String(d.get('medicalName')).trim(), mobile=String(d.get('mobile')).trim(), details=String(d.get('orderDetails')).trim(), notes=String(d.get('notes')||'').trim();
+ const now=new Date(), datePart=now.getFullYear().toString()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0');
+ const randomPart=Array.from(crypto.getRandomValues(new Uint8Array(4)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase().slice(0,6), id='CMD-'+datePart+'-'+randomPart;
+ document.getElementById('trackingId').textContent='Order ID: '+id;
+ document.getElementById('successScreen').classList.add('show');
+ document.getElementById('successScreen').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});
+ try{const old=JSON.parse(localStorage.getItem('cmadd2-recent-orders')||'[]');old.unshift({tracking_id:id,shop,mobile,details,created_at:now.toISOString()});localStorage.setItem('cmadd2-recent-orders',JSON.stringify(old.slice(0,10)))}catch(_){}
+ const msg=['🙏 *THANK YOU — ORDER REQUEST*','', '*Order ID:* '+id,...(enquiryId?['*Product Enquiry ID:* '+enquiryId]:[]),'*Business:* Choudhary Medical and Drug Distributors','*Medical / Shop Name:* '+shop,'*Mobile:* '+mobile,'*Products & Quantity:*\n'+details,'*Note:* '+(notes||'None'),'','Please confirm availability and share further order updates on WhatsApp.','Sent from CMADD2 website.'].join('\n');
+ const waUrl='https://wa.me/918000540156?text='+encodeURIComponent(msg);
+ btn.disabled=true;btn.textContent='Opening WhatsApp…';
+ const waWindow=window.open(waUrl,'_blank');
+ if(!waWindow){const link=document.createElement('a');link.href=waUrl;link.target='_blank';link.rel='noopener';link.textContent='Tap here to share your order on WhatsApp';link.style.cssText='display:block;text-align:center;margin-top:14px;font-weight:800;color:#075e54';document.getElementById('successScreen').appendChild(link)}
+ btn.disabled=false;btn.textContent='💬 Share Order on WhatsApp';
 });
-const existingId=new URLSearchParams(location.search).get('trackingId');if(existingId){document.getElementById('trackingId').textContent=existingId;document.getElementById('orderResult').style.display='block';}
-</script>
-<script src="/ai-assistant.js?v=3" defer></script>
-</body></html>
+// WhatsApp-only flow: no server/database save is attempted.
