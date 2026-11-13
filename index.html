@@ -138,13 +138,13 @@
   <div class="trust-stats-inner">
     <article class="trust-stat">
       <div class="trust-stat-icon" aria-hidden="true">🏪</div>
-      <strong>500+</strong>
+      <strong class="count-up" data-count="500" aria-label="500 plus">0+</strong>
       <p>Happy Medical Stores</p>
     </article>
     <article class="trust-stat">
       <div class="trust-stat-icon" aria-hidden="true">💊</div>
-      <strong>1000+</strong>
-      <p>Monopoly Products</p>
+      <strong class="count-up" data-count="350" aria-label="350 plus">0+</strong>
+      <p>Products</p>
     </article>
     <article class="trust-stat">
       <div class="trust-stat-icon" aria-hidden="true">🕒</div>
@@ -274,6 +274,38 @@ document.getElementById('medicalEnquiryForm').addEventListener('submit',function
 </script>
 <script>
 (()=>{try{const k='cmadd-visitor-key';let v=localStorage.getItem(k);const returning=!!v;if(!v){v=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();localStorage.setItem(k,v)}const track=(eventType,detail='')=>fetch('/api/activity',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitorKey:v,eventType,page:location.pathname,detail})}).catch(()=>{});track('page_view');if(returning)track('repeat_visit');document.querySelectorAll('a[href*="wa.me"]').forEach(a=>a.addEventListener('click',()=>track('whatsapp_click',a.href)));document.querySelectorAll('a[href="products.html"]').forEach(a=>a.addEventListener('click',()=>track('product_view','product catalog')))}catch(e){} })();
+</script>
+
+
+<script>
+/* CMADD2 trust-stat count-up animation */
+(function(){
+  const counters=document.querySelectorAll('.count-up[data-count]');
+  if(!counters.length) return;
+  const animateCounter=(el)=>{
+    if(el.dataset.animated==='true') return;
+    el.dataset.animated='true';
+    const target=Number(el.dataset.count)||0;
+    const duration=1800;
+    const start=performance.now();
+    const tick=(now)=>{
+      const progress=Math.min((now-start)/duration,1);
+      const eased=1-Math.pow(1-progress,3);
+      el.textContent=Math.floor(target*eased).toLocaleString('en-IN')+'+';
+      if(progress<1) requestAnimationFrame(tick);
+      else el.textContent=target.toLocaleString('en-IN')+'+';
+    };
+    requestAnimationFrame(tick);
+  };
+  if('IntersectionObserver' in window){
+    const observer=new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){animateCounter(entry.target);observer.unobserve(entry.target);}
+      });
+    },{threshold:.45});
+    counters.forEach(counter=>observer.observe(counter));
+  }else counters.forEach(animateCounter);
+})();
 </script>
 
 <script src="/ai-assistant.js?v=3" defer></script>
