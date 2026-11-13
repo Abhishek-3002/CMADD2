@@ -61,6 +61,22 @@
 .trust-stat p{margin:8px 0 0;color:#627487;font-size:14px;font-weight:650}
 @media(max-width:650px){.trust-stats{padding:24px 14px}.trust-stats-inner{grid-template-columns:1fr;gap:12px}.trust-stat{display:grid;grid-template-columns:48px 1fr;column-gap:14px;align-items:center;text-align:left;padding:18px}.trust-stat-icon{grid-row:1/3;margin:0}.trust-stat strong{font-size:29px}.trust-stat p{margin-top:3px}}
 
+
+/* CMADD2 customer advantages */
+.why-cmadd{padding:76px 5%;background:linear-gradient(145deg,#f2f8ff,#f7fcfa)}
+.why-cmadd-head{max-width:720px;margin:0 auto 34px;text-align:center}
+.why-cmadd-head .eyebrow{color:#16875b;font-size:12px;font-weight:850;letter-spacing:2px}
+.why-cmadd-head h2{color:#123b5d;font-size:clamp(27px,4vw,38px);margin:8px 0}
+.why-cmadd-head p{color:#637487;line-height:1.7}
+.why-cmadd-grid{max-width:1180px;margin:auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.why-cmadd-card{background:#fff;border:1px solid #e1ebf2;border-radius:19px;padding:24px 20px;box-shadow:0 12px 32px #123b5d0b;transition:transform .25s,box-shadow .25s}
+.why-cmadd-card:hover{transform:translateY(-5px);box-shadow:0 18px 38px #123b5d18}
+.why-cmadd-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#eaf4ff;font-size:22px;margin-bottom:16px}
+.why-cmadd-card h3{font-size:17px;color:#123b5d;margin-bottom:8px}
+.why-cmadd-card p{font-size:14px;line-height:1.65;color:#68798a;margin:0}
+@media(max-width:900px){.why-cmadd-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.why-cmadd{padding:48px 15px}.why-cmadd-grid{grid-template-columns:1fr}.why-cmadd-card{display:grid;grid-template-columns:48px 1fr;column-gap:13px;padding:18px}.why-cmadd-icon{grid-row:1/3;margin:0}.why-cmadd-card h3{align-self:end}.why-cmadd-card p{align-self:start}}
+
 </style>
 </head>
 <body>
@@ -150,6 +166,20 @@
     <div class="service-card"><div class="icon">🛒</div><h3>Create an Order</h3><p>Write your products and quantities, get an Order Tracking ID, and share the order on WhatsApp.</p><a href="create-order.html">Create Order →</a></div>
     <div class="service-card"><div class="icon">📦</div><h3>Track Order</h3><p>Check your order status using your Order ID.</p><a href="track-order.html">Track Order →</a></div>
     <div class="service-card"><div class="icon">⭐</div><h3>Customer Feedback</h3><p>Share your experience and feedback with our team.</p><a href="feedback.html">Give Feedback →</a></div>
+  </div>
+</section>
+
+<section class="why-cmadd" aria-labelledby="whyCmaddTitle">
+  <div class="why-cmadd-head">
+    <span class="eyebrow">THE CMADD2 ADVANTAGE</span>
+    <h2 id="whyCmaddTitle">Medical Wholesale, Made Easier</h2>
+    <p>We make it simple for medical stores to explore products, share requirements and stay connected with our team.</p>
+  </div>
+  <div class="why-cmadd-grid">
+    <article class="why-cmadd-card"><div class="why-cmadd-icon" aria-hidden="true">📲</div><h3>Easy WhatsApp Ordering</h3><p>Share your product list and quantity with our team through a simple WhatsApp enquiry.</p></article>
+    <article class="why-cmadd-card"><div class="why-cmadd-icon" aria-hidden="true">🔎</div><h3>Explore Product Range</h3><p>Browse the product catalogue and ask our team about availability and requirements.</p></article>
+    <article class="why-cmadd-card"><div class="why-cmadd-icon" aria-hidden="true">📦</div><h3>Order Tracking</h3><p>Use your order ID to check your order status through the website.</p></article>
+    <article class="why-cmadd-card"><div class="why-cmadd-icon" aria-hidden="true">🤝</div><h3>Direct Team Support</h3><p>Connect with our Bikaner-based team for product enquiries, feedback and assistance.</p></article>
   </div>
 </section>
 
