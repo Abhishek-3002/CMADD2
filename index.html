@@ -138,17 +138,17 @@
   <div class="trust-stats-inner">
     <article class="trust-stat">
       <div class="trust-stat-icon" aria-hidden="true">🏪</div>
-      <strong class="count-up" data-count="500" aria-label="500 plus">0+</strong>
+      <strong class="count-up" data-count="500" data-suffix="+" aria-label="500 plus">0+</strong>
       <p>Happy Medical Stores</p>
     </article>
     <article class="trust-stat">
       <div class="trust-stat-icon" aria-hidden="true">💊</div>
-      <strong class="count-up" data-count="350" aria-label="350 plus">0+</strong>
+      <strong class="count-up" data-count="350" data-suffix="+" aria-label="350 plus">0+</strong>
       <p>Products</p>
     </article>
     <article class="trust-stat">
       <div class="trust-stat-icon" aria-hidden="true">🕒</div>
-      <strong>24/7</strong>
+      <strong class="count-up" data-count="24" data-suffix="/7" aria-label="24 hours, 7 days">0/7</strong>
       <p>Customer Support</p>
     </article>
   </div>
@@ -291,9 +291,9 @@ document.getElementById('medicalEnquiryForm').addEventListener('submit',function
     const tick=(now)=>{
       const progress=Math.min((now-start)/duration,1);
       const eased=1-Math.pow(1-progress,3);
-      el.textContent=Math.floor(target*eased).toLocaleString('en-IN')+'+';
+      el.textContent=Math.floor(target*eased).toLocaleString('en-IN')+(el.dataset.suffix||'+');
       if(progress<1) requestAnimationFrame(tick);
-      else el.textContent=target.toLocaleString('en-IN')+'+';
+      else el.textContent=target.toLocaleString('en-IN')+(el.dataset.suffix||'+');
     };
     requestAnimationFrame(tick);
   };
