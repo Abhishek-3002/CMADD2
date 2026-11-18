@@ -656,6 +656,33 @@ tr:hover td{
    RESPONSIVE
 ================================ */
 
+/* FEBRUARY 2027 COUNTDOWN */
+.countdown-card{
+    grid-column:1 / -1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:22px 24px;
+    margin:0 0 22px;
+    border:1px solid rgba(124,58,237,.22);
+    border-radius:18px;
+    background:linear-gradient(120deg,rgba(124,58,237,.10),rgba(255,255,255,.96));
+    box-shadow:0 8px 24px rgba(15,23,42,.06);
+}
+.countdown-heading{font-size:18px;font-weight:750;color:#1e1b4b;margin-bottom:5px}
+.countdown-subtitle{font-size:12px;color:#64748b}
+.countdown-units{display:flex;gap:10px;flex-wrap:wrap}
+.countdown-unit{min-width:68px;text-align:center;padding:10px 12px;border-radius:12px;background:#fff;border:1px solid #e2e8f0}
+.countdown-number{display:block;font-size:25px;line-height:1.2;font-weight:800;color:#6d28d9;font-variant-numeric:tabular-nums}
+.countdown-label{display:block;margin-top:4px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#64748b}
+@media(max-width:650px){
+    .countdown-card{align-items:flex-start;flex-direction:column;padding:18px}
+    .countdown-units{width:100%;gap:7px}
+    .countdown-unit{flex:1;min-width:0;padding:9px 5px}
+    .countdown-number{font-size:21px}
+}
+
 @media(max-width:1100px){
 
     .dashboard-grid{
@@ -736,6 +763,7 @@ tr:hover td{
 </style>
 
 <link rel="stylesheet" href="motion-theme.css?v=1">
+<link rel="stylesheet" href="countdown-widget.css?v=1">
 </head>
 
 <body>
@@ -819,6 +847,20 @@ tr:hover td{
 
 </div>
 
+
+<!-- FEBRUARY 2027 COUNTDOWN -->
+<section class="countdown-card" aria-label="Countdown to February 2027">
+    <div>
+        <div class="countdown-heading">February 2027 Countdown</div>
+        <div class="countdown-subtitle" id="countdownMessage">Time remaining until 1 February 2027</div>
+    </div>
+    <div class="countdown-units" aria-live="off">
+        <div class="countdown-unit"><span class="countdown-number" id="countdownDays">--</span><span class="countdown-label">Days</span></div>
+        <div class="countdown-unit"><span class="countdown-number" id="countdownHours">--</span><span class="countdown-label">Hours</span></div>
+        <div class="countdown-unit"><span class="countdown-number" id="countdownMinutes">--</span><span class="countdown-label">Minutes</span></div>
+        <div class="countdown-unit"><span class="countdown-number" id="countdownSeconds">--</span><span class="countdown-label">Seconds</span></div>
+    </div>
+</section>
 
 <!-- MAIN STAT CARDS -->
 
@@ -4181,6 +4223,33 @@ function escapeJs(
    START
 ========================================= */
 
+// Live countdown to 1 February 2027, 12:00 AM India time
+(function initFebruaryCountdown(){
+    const targetTime = new Date("2027-02-01T00:00:00+05:30").getTime();
+    const ids = {
+        days: document.getElementById("countdownDays"),
+        hours: document.getElementById("countdownHours"),
+        minutes: document.getElementById("countdownMinutes"),
+        seconds: document.getElementById("countdownSeconds"),
+        message: document.getElementById("countdownMessage")
+    };
+    if (!ids.days || !ids.hours || !ids.minutes || !ids.seconds) return;
+    function updateCountdown(){
+        const remaining = Math.max(0, targetTime - Date.now());
+        const totalSeconds = Math.floor(remaining / 1000);
+        ids.days.textContent = Math.floor(totalSeconds / 86400);
+        ids.hours.textContent = String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2,"0");
+        ids.minutes.textContent = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2,"0");
+        ids.seconds.textContent = String(totalSeconds % 60).padStart(2,"0");
+        if (remaining <= 0) {
+            ids.message.textContent = "February 2027 has arrived!";
+            clearInterval(countdownInterval);
+        }
+    }
+    updateCountdown();
+    const countdownInterval = setInterval(updateCountdown, 1000);
+})();
+
 (async function(){
 
     const loggedIn =
@@ -4214,6 +4283,7 @@ setInterval(
 
 
 <script src="/ai-assistant.js?v=3" defer></script>
+<script src="countdown-widget.js?v=1" defer></script>
 </body>
 
 </html>
